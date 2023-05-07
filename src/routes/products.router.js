@@ -34,7 +34,7 @@ productsRouter.get('/:pid', async (req, res) => {
 
 productsRouter.post('/', async (req, res) => {
     try {
-        const {title, description, code, price, stock, category, thumbnails} = req.body;
+        const {title, description, code, price, stock, category, thumbnail} = req.body;
         const newProduct = {
             id: uuidv4(),
             title,
@@ -44,11 +44,12 @@ productsRouter.post('/', async (req, res) => {
             status: true,
             stock,
             category,
-            thumbnails: thumbnails || []
+            thumbnail: thumbnail || []
         };
         await productManager.addProduct(newProduct);
         return res.status(201).json(newProduct);
-    }catch(err){
+    }catch(error){
+        console.error(error);
         return res.status(500).json({message: "Internal Server Error"});
     }
 });

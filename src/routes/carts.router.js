@@ -1,7 +1,15 @@
+const fs = require('fs');
+const {v4: uuidv4} = require('uuid');
 const express = require('express');
 const cartsRouter = express.Router();
-const {v4: uuidv4} = require('uuid');
-let carts = require("../../carts.json");
+
+let carts = [];
+
+try {
+    carts = JSON.parse(fs.readFileSync('../carts.json'));
+} catch (err) {
+    console.log(`Error reading carts from file: ${err}`);
+}
 
 cartsRouter.post('/', (req, res) => {
     try {
@@ -10,20 +18,19 @@ cartsRouter.post('/', (req, res) => {
             products: [],
         };
         carts.push(newCart);
-        require('fs').writeFileSync('./carts.json', JSON.stringify(carts))
-        res.status(201).json(newCart)
+        fs.writeFileSync('../carts.json', JSON.stringify(carts));
+        res.status(201).json(newCart);
     }catch(err){
-        res.status(500).json({message: 'Internal Server Error'});
+    res.status(500).json({message: 'Internal Server Error'});
     }
 });
 
 cartsRouter.get('/:cid', (req, res) => {
-    const cartId = req.params.cid;
-    const cart = carts.find((cart) => cart.id === cartId);
+    const cart = carts.find((c) => c.id === req.params.id);
     if (!cart) {
-        return res.status(404).json({message: 'Cart not found'});
+        res.status(404).json({message: 'Cart not found'});
     }else{
-        res.status(200).json(cart.products);
+        res.json(cart);
     }
 });
 
@@ -44,7 +51,7 @@ cartsRouter.post('/:cid/product/:pid', (req, res) => {
         cart.products.push({id: productId, quantity});
     }
 
-    require('fs').writeFileSync('./carts.json', JSON.stringify(carts));
+    require('fs').writeFileSync('../carts.json', JSON.stringify(carts));
     res.status(200).json(cart);
 });
 

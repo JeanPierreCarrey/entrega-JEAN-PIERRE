@@ -91,23 +91,4 @@ class ProductManager{
     }
 }
 
-const productManager = new ProductManager("products.json");
-
-/* async function asyncProductManager() {
-    await productManager.deleteProduct(1)
-};
-
-asyncProductManager(); */
-
 module.exports = {ProductManager};
-
-/* async function asyncProductManager() {
-        await productManager.addProduct({
-            title: 'coca cola',
-            description: 'Refresco sabor cola de la marca Coca Cola',
-            price: 150,
-            thumbnail: 'https://www.distribuidorabebidas.com.uy/wp-content/uploads/sites/31/2018/01/funda_coca_cola_225_litros.jpg',
-            code: 'coke100',
-            stock: 20,
-        });
-    } */
