@@ -93,36 +93,21 @@ class ProductManager{
 
 const productManager = new ProductManager("products.json");
 
-async function asyncPorductManager() {
-/*     await productManager.addProduct({
-        title: 'coca cola',
-        description: 'Refresco sabor cola de la marca Coca Cola',
-        price: 150,
-        thumbnail: 'https://www.distribuidorabebidas.com.uy/wp-content/uploads/sites/31/2018/01/funda_coca_cola_225_litros.jpg',
-        code: 'coke100',
-        stock: 20,
-    });
-    
-    await productManager.addProduct({
-        title: 'pepsi',
-        description: 'Refresco sabor cola de la marca Pepsi',
-        price: 125,
-        thumbnail: 'https://discouy.vtexassets.com/arquivos/ids/1266779-800-auto?v=638162340142100000&width=800&height=auto&aspect=true',
-        code: 'pepsi50',
-        stock: 10,
-    }); */
-    
-/*     const seeProducts = await productManager.getProducts();
-    console.log(seeProducts);
+/* async function asyncProductManager() {
+    await productManager.deleteProduct(1)
+};
 
-    const productById = await productManager.getProductById(1);
-    console.log(productById);
-
-    await productManager.updateProduct(1, {stock: 15});
-
-    await productManager.deleteProduct(2); */
-}
-
-asyncPorductManager();
+asyncProductManager(); */
 
 module.exports = {ProductManager};
+
+/* async function asyncProductManager() {
+        await productManager.addProduct({
+            title: 'coca cola',
+            description: 'Refresco sabor cola de la marca Coca Cola',
+            price: 150,
+            thumbnail: 'https://www.distribuidorabebidas.com.uy/wp-content/uploads/sites/31/2018/01/funda_coca_cola_225_litros.jpg',
+            code: 'coke100',
+            stock: 20,
+        });
+    } */
