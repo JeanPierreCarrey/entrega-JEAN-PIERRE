@@ -1,0 +1,35 @@
+{{!-- <!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Product List</title>
+    </head>
+    <body>
+        <h1>Product List</h1>
+            <ul>
+                {{#each products}}
+                    <li>{{this.name}} - {{this.price}}</li>
+                {{/each}}
+            </ul>
+    </body>
+</html> --}}
+
+<div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        socket.on('update', function(data){
+            // Update product list
+            const productsList = document.getElementById('productsList');
+            const newProduct = document.createElement('li');
+            newProduct.innerHTML = data.title + ' - $' + data.price;
+            productsList.appendChild(newProduct);
+        });
+    </script>
+    <h1>Products</h1>
+        <ul id="productsList">
+        {{#each products}}
+            <li>{{this.title}} - ${{this.price}}</li>
+        {{/each}}
+        </ul>
+</div>
