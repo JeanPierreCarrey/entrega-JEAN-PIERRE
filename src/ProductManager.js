@@ -1,7 +1,7 @@
 const fs = require("fs");
+const {v4: uuidv4} = require('uuid');
 
 class ProductManager{
-    #lastId = 0;
     constructor(path) {
         this.path = path;
     }
@@ -17,15 +17,14 @@ class ProductManager{
             if(!product.title || !product.description || !product.price || !product.thumbnail || !product.code || !product.stock) {
                 throw new Error ("All fields are mandatory")
             }
-    
-            const newId = ++this.#lastId
-    
-            const newProduct = {id: newId, ...product};
+
+            const newProduct = { ...product, id: uuidv4()};
             products.push(newProduct);
             await this.writeProducts(products);
             return newProduct;
         }
         catch (err){
+            console.error("Error in addProduct method:", err);
             throw new Error ("addProduct method failed")
         }
     }
@@ -50,14 +49,15 @@ class ProductManager{
             throw new Error ("getProductById method failed")
         }
     }
-    async updateProduct(productId, update){
+    async updateProduct(productId, changes){
         try {
             const products = await this.getProducts();
             const productIndex = products.findIndex((p) => p.id === productId);
             if (productIndex === -1) {
                 throw new Error("Product with the specified id not found");
             }
-    
+
+            const {id, ...update} = changes
             const updatedProduct = {...products[productIndex], ...update};
             products[productIndex] = updatedProduct;
             await this.writeProducts(products);

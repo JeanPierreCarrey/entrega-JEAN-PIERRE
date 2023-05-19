@@ -1,54 +1,80 @@
 const express = require('express');
-const http = require('http');
-const path = require('path');
+//const http = require('http');
+//const path = require('path');
 const {Server} = require('socket.io');
 const {engine} = require('express-handlebars');
 const productsRouter = require('./routes/products.router.js');
 const cartsRouter = require('./routes/carts.router.js');
 const viewsRouter = require('./routes/views.router.js');
 //const {__dirname} = require("./utils.js")
-const port = 8080
 //const {productRouterHtml} = require("./routes/home.router.js")
 //const {realTimeRouterSockets} = require("./routes/realTimeProducts.router.js")
-const {ProductManager} = require("./ProductManager");
-
+const productManager = require("./ProductManager.js");
 const app = express();
+const port = 8080
+
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static("src/public"));//app.use(express.static(path.join(__dirname, "public")));
 
 app.engine('handlebars', engine());
 app.set('view engine', '.handlebars');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', 'src/views'); //app.set('views', path.join(__dirname, 'views'));
 
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
-app.use('/api/', viewsRouter);
+app.use('/', viewsRouter);
 
-const httpServer = http.createServer(app);
+const httpServer = app.listen(port, () => {
+  console.log(`Server running on port http://localhost:${port}`)
+})
 
-const io = new Server(httpServer);
+const socketServer = new Server(httpServer);
 
 socketServer.on('connection', (socket) => {
-  console.log('New socket connection:' + socket.id);
-  socket.emit("mensaje", "Conectado")
+  console.log('New user connected');
 
-  socket.on('productCreated', async (req, res) => {
+  socket.on('addProduct', async entries => {
+    const product = await productManager.addProduct(entries);
+    socketServer.emit('addedProduct', product)
+  })
+
+  socket.on('deleteProduct', async id => {
+    await productManager.deleteProduct(id);
+    socketServer.emit('deletedProduct', id)
+  })
+});
+
+/* app.get("*"), (req, res, next) => {
+  res.status(404).json({status: "error", msg: "Not Found", data: {} })
+}
+
+module.exports = app; */
+
+
+
+
+
+
+
+
+  /* socket.on('productCreated', async (req, res) => {
     const products = new ProductManager("./productos.json");
     await products.addProduct(req);
-    socketServer.emit("newProduct", req);
+    io.emit("newProduct", req);
   });
 
   socket.on('productDeleted', async (req, res) => {
     const products = new ProductManager("./productos.json");
     await products.deleteProduct(req);
-    socketServer.emit("productDeleted", req);
+    io.emit("productDeleted", req);
   });
 });
 
 app.get("*"), (req, res, next) => {
   res.status(404).json({status: "error", msg: "Not Found", data: {} })
 }
+ */
 
 /* const socketServer = new Server(httpServer);
 

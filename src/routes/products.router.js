@@ -1,8 +1,8 @@
 const express = require('express');
 const productsRouter = express.Router();
 const {v4: uuidv4} = require('uuid');
-const {ProductManager} = require("../ProductManager");
-const productManager = new ProductManager("../products.json");
+const {ProductManager} = require("../ProductManager.js");
+const productManager = new ProductManager("products.json");
 
 productsRouter.get('/', async (req, res) => {
     try {
@@ -28,7 +28,7 @@ productsRouter.get('/:pid', async (req, res) => {
             res.status(200).json(products);
         }
     }catch(err){
-        return res.status(500).json({message: "Internal Server Error"})
+        return res.status(404).json({message: "Product not found"})
     }
 });
 
@@ -36,7 +36,6 @@ productsRouter.post('/', async (req, res) => {
     try {
         const {title, description, code, price, stock, category, thumbnail} = req.body;
         const newProduct = {
-            id: uuidv4(),
             title,
             description,
             code,
@@ -46,8 +45,9 @@ productsRouter.post('/', async (req, res) => {
             category,
             thumbnail: thumbnail || []
         };
-        await productManager.addProduct(newProduct);
-        return res.status(201).json(newProduct);
+        //await productManager.addProduct(newProduct);
+        const productCreated = await productManager.addProduct(newProduct);
+        return res.status(201).json(productCreated);
     }catch(error){
         console.error(error);
         return res.status(500).json({message: "Internal Server Error"});
