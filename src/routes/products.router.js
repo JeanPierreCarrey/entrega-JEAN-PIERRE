@@ -1,6 +1,5 @@
 const express = require('express');
 const productsRouter = express.Router();
-const {v4: uuidv4} = require('uuid');
 const {ProductManager} = require("../ProductManager.js");
 const productManager = new ProductManager("products.json");
 
@@ -45,7 +44,6 @@ productsRouter.post('/', async (req, res) => {
             category,
             thumbnail: thumbnail || []
         };
-        //await productManager.addProduct(newProduct);
         const productCreated = await productManager.addProduct(newProduct);
         return res.status(201).json(productCreated);
     }catch(error){

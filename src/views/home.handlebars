@@ -16,14 +16,23 @@
     </form>
 
     <h1>Products</h1>
-        <ul id="productsList">
+    <ul id='productsList'>
         {{#each products}}
-            <li id={{this.id}}>
-                <div>
-                    <p>{{this.title}} - {{this.description}} - ${{this.price}} - {{this.thumbnail}} - {{this.code}} - {{this.stock}}</p>
-                    <button onclick="deleteProduct("{{this.id}}")">Delete</button>
-                </div>
-            </li>
+        <li id={{this.id}}>
+            <div>
+                <p>{{this.title}}
+                -
+                {{this.description}}
+                - ${{this.price}}
+                -
+                {{this.thumbnail}}
+                -
+                {{this.code}}
+                -
+                {{this.stock}}</p>
+            <button onclick="deleteProduct('{{this.id}}')">Delete</button>
+        </div>
+        </li>
         {{/each}}
-        </ul>
+    </ul>
 </div>

@@ -16,16 +16,25 @@
   </form>
 
   <h1>Products</h1>
-    <ul id="productsList">
-      {{#each products}}
-            <li id={{this.id}}>
-                <div>
-                    <p><p>{{this.title}} - {{this.description}} - ${{this.price}} - {{this.thumbnail}} - {{this.code}} - {{this.stock}}</p></p>
-                    <button onclick="deleteProductSocket("{{this.id}}")">Delete</button>
-                </div>
-            </li>
-      {{/each}}
-    </ul>
+    <ul id='productsList'>
+    {{#each products}}
+      <li id={{this.id}}>
+        <div>
+          <p>{{this.title}}
+              -
+              {{this.description}}
+              - ${{this.price}}
+              -
+              {{this.thumbnail}}
+              -
+              {{this.code}}
+              -
+              {{this.stock}}</p>
+          <button onclick="deleteProductSocket('{{this.id}}')">Delete</button>
+        </div>
+      </li>
+    {{/each}}
+  </ul>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
