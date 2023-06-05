@@ -2,7 +2,6 @@ const addProductForm = document.getElementById("addProductForm");
 const addProductFormReal = document.getElementById("addProductFormReal");
 const productsList = document.getElementById("productsList");
 
-try{
 async function deleteProduct(id) {
     const response = await fetch(`/api/products/${id}`, {
         method: "delete",
@@ -14,8 +13,6 @@ async function deleteProduct(id) {
         console.error()
         alert("Product couldn't be deleted")
     }
-}}catch(error){
-    console.error(error)
 };
 
 function deleteProductSocket(id) {

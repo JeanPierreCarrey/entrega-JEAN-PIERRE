@@ -28,6 +28,7 @@ class ProductManager{
             throw new Error ("addProduct method failed")
         }
     }
+
     async getProducts() {
         try {
             const data = await fs.promises.readFile(this.path, "utf8");
@@ -36,6 +37,7 @@ class ProductManager{
             return [];
             }
     }
+
     async getProductById(productId) {
         try {
             const products = await this.getProducts();
@@ -49,6 +51,7 @@ class ProductManager{
             throw new Error ("getProductById method failed")
         }
     }
+
     async updateProduct(productId, changes){
         try {
             const products = await this.getProducts();
@@ -66,6 +69,7 @@ class ProductManager{
             throw new Error ("updateProduct method failed")
         }
     }
+
     async deleteProduct(productId) {
         try {
             const products = await this.getProducts();

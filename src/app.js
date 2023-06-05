@@ -1,13 +1,13 @@
 const express = require('express');
 const {engine} = require('express-handlebars');
-const {Server} = require('socket.io');
 
 const productsRouter = require('./routes/products.router.js');
 const cartsRouter = require('./routes/carts.router.js');
 const viewsRouter = require('./routes/views.router.js');
+const chatRouter = require('./routes/chat.router.js');
 
-const {ProductManager} = require("./ProductManager.js");
-const productManager = new ProductManager("products.json");
+const {connectSocket} = require('./utils.js');
+const {connectMongo} = require('./utils.js');
 
 const app = express();
 const port = 8080
@@ -23,23 +23,18 @@ app.set('views', 'src/views');
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/', viewsRouter);
+app.use("/chat", chatRouter);
+app.get("*", (req, res) => {
+	return res.status(404).json({
+        status: "error",
+        msg: "no encontrado",
+        data: {},
+    });
+});
 
 const httpServer = app.listen(port, () => {
-  console.log(`Server running on port http://localhost:${port}`)
-})
-
-const socketServer = new Server(httpServer);
-
-socketServer.on('connection', (socket) => {
-  console.log('New user connected');
-
-  socket.on('addProduct', async entries => {
-    const product = await productManager.addProduct(entries);
-    socketServer.emit('addedProduct', product)
-  })
-
-  socket.on('deleteProduct', async id => {
-    await productManager.deleteProduct(id);
-    socketServer.emit('deletedProduct', id)
-  })
+    console.log(`Server running on port http://localhost:${port}`)
 });
+
+connectMongo();
+connectSocket(httpServer);
