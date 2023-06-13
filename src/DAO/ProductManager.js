@@ -14,7 +14,7 @@ class ProductManager{
                 throw new Error("Product with the same code already exists");
             }
             console.log(product);
-            if(!product.title || !product.description || !product.price || !product.thumbnail || !product.code || !product.stock) {
+            if(!product.title || !product.description || !product.price || !product.thumbnail || !product.code || !product.stock || !product.category) {
                 throw new Error ("All fields are mandatory")
             }
 

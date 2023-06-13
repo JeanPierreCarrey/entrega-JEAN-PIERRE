@@ -40,7 +40,7 @@ try {
             const li = `
             <li id="${product.id}">
                 <div>
-                    <p>${product.title} - ${product.description} - ${product.price} - ${product.thumbnail} - ${product.code} - ${product.stock}</p>
+                    <p>${product.title} - ${product.description} - ${product.price} - ${product.thumbnail} - ${product.code} - ${product.stock} - ${product.category}</p>
                     <button onclick="deleteProduct('${product.id}')">Delete</button>
                 </div>
             </li>
@@ -61,7 +61,7 @@ try {
         const li = `
         <li id="${product.id}">
             <div>
-                <p>${product.title} - ${product.description} - ${product.price} - ${product.thumbnail} - ${product.code} - ${product.stock}</p>
+                <p>${product.title} - ${product.description} - ${product.price} - ${product.thumbnail} - ${product.code} - ${product.stock} - ${product.category}</p>
                 <button onclick="deleteProductSocket('${product.id}')">Delete</button>
             </div>
         </li>
