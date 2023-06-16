@@ -16,7 +16,7 @@ cartsRouter.post('/', async (req, res) => {
 cartsRouter.get('/:cid', async (req, res) => {
     try{
         const cartId = req.params.cid;
-        const cart = await cartService.get(cartId)//.populate('products');
+        const cart = await cartService.get(cartId)
         res.status(200).json(cart);
     }catch (error){
         res.status(404).json({message: error.message})

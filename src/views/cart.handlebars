@@ -1,6 +1,6 @@
 <h1>Cart</h1>
 
-{{#if cart.products.length}}
+{{#if cart.length}}
     <table>
         <thead>
             <tr>
@@ -11,11 +11,11 @@
                 <th>code</th>
                 <th>stock</th>
                 <th>category</th>
-                <th>quantity</th> {{!-- ? --}}
+                <th>quantity</th>
             </tr>
         </thead>
         <tbody>
-            {{#each cart.products}}
+            {{#each cart}}
                 <tr>
                     <td>{{this.title}}</td>
                     <td>{{this.description}}</td>
@@ -24,7 +24,7 @@
                     <td>{{this.code}}</td>
                     <td>{{this.stock}}</td>
                     <td>{{this.category}}</td>
-                    <td>{{this.quantity}}</td> {{!-- ? --}}
+                    <td>{{this.quantity}}</td>
                 </tr>
             {{/each}}
         </tbody>

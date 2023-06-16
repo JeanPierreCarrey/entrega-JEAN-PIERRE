@@ -1,8 +1,11 @@
 ////--------------------- MONGO ---------------------
 
+//require('dotenv').config();
 const {connect} = require("mongoose");
+
 async function connectMongo() {
     try {
+        //const mongodbUrl = process.env.MONGODB_URL;
         await connect("mongodb+srv://jeanpierrecarrey:09lcQ3OehxvKzocQ@backendcoder.nkbcjia.mongodb.net/ecommerce?retryWrites=true&w=majority");
         console.log("plug to mongo!");
     } catch (e) {
@@ -16,7 +19,7 @@ exports.connectMongo = connectMongo;
 //--------------------- SOCKET ---------------------
 const {Server} = require('socket.io');
 const {ChatModel} = require("./DAO/models/chats.model.js");
-const { ProductService } = require("./services/products.service.js");
+const {ProductService} = require("./services/products.service.js");
 
 function connectSocket(httpServer){
     const socketServer = new Server(httpServer);
@@ -24,7 +27,7 @@ function connectSocket(httpServer){
     socketServer.on('connection', (socket) => {
         console.log('New user connected');
 
-        socket.on('addProduct', async entries => {
+        socket.on('addProduct', async (entries) => {
         const product = await ProductService.createOne(entries);
         socketServer.emit('addedProduct', product)
         })

@@ -1,22 +1,36 @@
 <h1>All Products</h1>
 {{#each products}}
     <div>
-        <h2>{{title}}</h2>
-        <p>{{description}}</p>
-        <p>Price: {{price}}</p>
-        <p>{{thumbnail}}</p>
-        <p>{{code}}</p>
-        <p>{{stock}}</p>
-        <p>{{category}}</p>
-        <p>Availability: {{availability}}</p>
+        <h2>{{this.title}}</h2>
+        <p>{{this.description}}</p>
+        <p>Price: {{this.price}}</p>
+        <p>{{this.thumbnail}}</p>
+        <p>{{this.code}}</p>
+        <p>{{this.stock}}</p>
+        <p>{{this.category}}</p>
+        <p>Availability: {{this.availability}}</p> {{!-- ? --}}
 
-        <a href="/products/{{_id}}">View Details</a>
-        <form action="/api/carts" method="POST">
-            <input type="hidden" name="productId" value="{{_id}}">
-            <button type="submit">Add to Cart</button>
-        </form>
+        <a href="/products/{{this._id}}">View details of {{this._id}}</a>
+        <button onclick="putIntoCart('{{this._id}}')">Add to cart {{this._id}}</button>
     </div>
 {{/each}}
+
+totalPages:
+{{totalPages}}
+prevPage:
+{{prevPage}}
+nextPage:
+{{nextPage}}
+currentPage:
+{{currentPage}}
+hasPrevPage:
+{{hasPrevPage}}
+hasNextPage:
+{{hasNextPage}}
+prevLink:
+{{prevLink}}
+nextLink:
+{{nextLink}}
 
 <div class="pagination">
     {{#if prevLink}}

@@ -1,12 +1,15 @@
 const {Schema, model} = require("mongoose");
 
 const schema = new Schema({
-    products: [
-        {
-            product: {type: Schema.Types.ObjectId, ref: "Product", required: true},
-            quantity: {type: Number, default: 1},
+    products: {
+            type: [
+                {
+                    product: {type: Schema.Types.ObjectId, ref: "products", required: true},
+                    quantity: {type: Number, default: 1},
+                },
+            ],
+            default: [],
         },
-    ],
 });
 
 exports.CartModel = model("carts", schema);
