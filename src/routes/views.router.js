@@ -108,4 +108,8 @@ viewsRouter.get('/carts/:cid', async (req, res, next) => {
     }
 });
 
+viewsRouter.get('/login', async (req, res) => {
+    res.render('login');
+});
+
 module.exports = viewsRouter;
