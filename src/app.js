@@ -1,9 +1,9 @@
 const express = require('express');
 const {engine} = require('express-handlebars');
-//require('dotenv').config();
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const passport = require('passport');
+require('dotenv').config();
 
 const productsRouter = require('./routes/products.router.js');
 const cartsRouter = require('./routes/carts.router.js');
@@ -23,34 +23,14 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static("src/public"));
 
-/* const MONGO_USER = process.env.MONGO_USER;
-const MONGO_PASS = process.env.MONGO_PASS;
-const DB_NAME = process.env.DB_NAME; */
+const mongodbUrl = process.env.MONGODB_URL;
 app.use(session({
-    store: MongoStore.create({mongoUrl: 'mongodb+srv://jeanpierrecarrey:09lcQ3OehxvKzocQ@backendcoder.nkbcjia.mongodb.net/ecommerce?retryWrites=true&w=majority', ttl: 3600}),
+    store: MongoStore.create({mongoUrl: mongodbUrl, ttl: 3600}),
     secret: 'secret',
     resave: true,
     saveUninitialized: true,
 })
 );
-
-/* const sessionStore = new MongoStore({
-    mongoUrl: process.env.MONGODB_URL,
-    mongoOptions: {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    },
-    ttl: 3600,
-});
-
-app.use(
-    session({
-    store: sessionStore,
-    secret: 'secret',
-    resave: true,
-    saveUninitialized: true,
-    })
-  ); */
 
 iniPassport();
 app.use(passport.initialize());

@@ -4,6 +4,9 @@ const {createHash, isValidPassword} = require('../utils.js');
 const {UserModel} = require('../DAO/models/users.model.js');
 const LocalStrategy = local.Strategy;
 const GitHubStrategy = require('passport-github2');
+require('dotenv').config();
+const clientID = process.env.CLIENT_ID
+const clientSecret = process.env.CLIENT_SECRET
 
 function iniPassport() {
     passport.use(
@@ -67,8 +70,8 @@ function iniPassport() {
         'github',
         new GitHubStrategy(
             {
-                clientID: '',
-                clientSecret: '',
+                clientID: clientID,
+                clientSecret: clientSecret,
                 callbackURL: 'http://localhost:8080/api/sessions/githubcallback',
             },
             async (accessToken, _, profile, done) => {

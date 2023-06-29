@@ -1,11 +1,12 @@
 ////--------------------- MONGO ---------------------
 
-//require('dotenv').config();
+require('dotenv').config();
 const {connect} = require("mongoose");
 
 async function connectMongo() {
     try {
-        await connect('mongodb+srv://jeanpierrecarrey:09lcQ3OehxvKzocQ@backendcoder.nkbcjia.mongodb.net/ecommerce?retryWrites=true&w=majority');
+        const mongodbUrl = process.env.MONGODB_URL;
+        await connect(mongodbUrl);
         console.log("plug to mongo!");
     } catch (e) {
         console.log(e);
