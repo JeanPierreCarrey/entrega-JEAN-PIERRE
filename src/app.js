@@ -49,7 +49,7 @@ app.use('/api/sessions', sessionsRouter);
 app.get("*", (req, res) => {
 	return res.status(404).json({
         status: "error",
-        msg: "no encontrado",
+        msg: "not found",
         data: {},
     });
 });

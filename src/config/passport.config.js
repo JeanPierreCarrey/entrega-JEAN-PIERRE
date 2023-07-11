@@ -1,9 +1,13 @@
 const passport = require('passport');
 const local = require('passport-local');
-const {createHash, isValidPassword} = require('../utils.js');
-const {UserModel} = require('../DAO/models/users.model.js');
 const LocalStrategy = local.Strategy;
 const GitHubStrategy = require('passport-github2');
+
+const {createHash, isValidPassword} = require('../utils.js');
+const {UserModel} = require('../DAO/models/users.model.js');
+const CartService = require('../services/carts.service.js');
+const cartService = new CartService();
+
 require('dotenv').config();
 const clientID = process.env.CLIENT_ID
 const clientSecret = process.env.CLIENT_SECRET
@@ -39,20 +43,26 @@ function iniPassport() {
             },
             async (req, username, password, done) => {
                 try {
-                    const { email, firstName, lastName } = req.body;
+                    const { email, firstName, lastName, age } = req.body;
                     let user = await UserModel.findOne({ email: username });
                     if (user) {
                         console.log('User already exists');
                         return done(null, false);
                     }
 
+                    const newCart = await cartService.createOne();
+                    const cartID = newCart._id.toString();
+
                     const newUser = {
                         email,
                         firstName,
                         lastName,
-                        isAdmin: false,
+                        age,
                         password: createHash(password),
+                        cartID,
+                        role: "user",
                     };
+
                     let userCreated = await UserModel.create(newUser);
                     console.log(userCreated);
                     console.log('User Registration succesful');
@@ -94,12 +104,17 @@ function iniPassport() {
     
                     let user = await UserModel.findOne({ email: profile.email });
                     if (!user) {
+                        const newCart = await cartService.createOne();
+                        const cartID = newCart._id.toString();
+
                         const newUser = {
                             email: profile.email,
                             firstName: profile._json.name || profile._json.login || 'noname',
                             lastName: 'nolast',
-                            isAdmin: false,
+                            age: profile.age,
                             password: profile.password || '',
+                            cartID: cartID || '',
+                            role: "user",
                         };
                         let userCreated = await UserModel.create(newUser);
                         console.log('User Registration succesful');

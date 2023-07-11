@@ -16,9 +16,9 @@ authRouter.post('/login', passport.authenticate('login', { failureRedirect: '/au
     if (!req.user) {
         return res.json({ error: 'invalid credentials' });
     }
-    req.session.user = { _id: req.user._id, email: req.user.email, firstName: req.user.firstName, lastName: req.user.lastName, isAdmin: req.user.isAdmin };
+    req.session.user = { _id: req.user._id, email: req.user.email, firstName: req.user.firstName, lastName: req.user.lastName, age: req.user.age, role: req.user.role };
 
-    return res.json({ msg: 'ok', payload: req.user });
+    return res.redirect('/api/products');
 });
 
 authRouter.get('/faillogin', async (req, res) => {
@@ -61,7 +61,7 @@ authRouter.post('/register', passport.authenticate('register', { failureRedirect
     if (!req.user) {
         return res.json({ error: 'something went wrong' });
     }
-    req.session.user = { _id: req.user._id, email: req.user.email, firstName: req.user.firstName, lastName: req.user.lastName, isAdmin: req.user.isAdmin };
+    req.session.user = { _id: req.user._id, email: req.user.email, firstName: req.user.firstName, lastName: req.user.lastName, age: req.user.age, isAdmin: req.user.isAdmin };
 
     return res.json({ msg: 'ok', payload: req.user });
 });
@@ -96,7 +96,9 @@ authRouter.get('/products', (req, res) => {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
-                isAdmin: user.isAdmin,
+                age: user.age,
+                cartID: user.cartID,
+                role: user.role,
             };
             return res.render('products', { user: userData });
         } else {

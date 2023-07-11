@@ -14,4 +14,9 @@ sessionsRouter.get('/show', (req, res) => {
     return res.send(JSON.stringify(req.session));
 });
 
+sessionsRouter.get("/current", (req, res) => {
+    console.log(req.session);
+    return res.status(200).json({ user: req.session.user });
+});
+
 module.exports = sessionsRouter;
