@@ -1,4 +1,25 @@
-function isUser(req, res, next) {
+const isAdmin = (req, res, next) => {
+    if (req.session.user && req.session.user.role === 'admin') {
+        return next();
+    } else {
+        return res.status(403).json({ error: 'Access denied. Only admins are allowed.' });
+    }
+};
+
+const isUser = (req, res, next) => {
+    if (req.session.user && req.session.user.role === 'user') {
+        return next();
+    } else {
+        return res.status(403).json({ error: 'Access denied. Only users are allowed.' });
+    }
+};
+
+module.exports = {
+    isAdmin,
+    isUser,
+};
+
+/* function isUser(req, res, next) {
     if (req.session?.email) {
         return next();
     }
@@ -12,4 +33,4 @@ function isAdmin(req, res, next) {
     return res.status(403).render('error', {error: 'Authorization error'});
 };
 
-module.exports = {isUser, isAdmin};
+module.exports = {isUser, isAdmin}; */

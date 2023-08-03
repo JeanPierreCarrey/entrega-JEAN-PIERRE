@@ -1,4 +1,5 @@
 const passport = require('passport');
+const UserDTO = require("../DAO/DTO/user.dto");
 
 const renderGitHubLogin = (req, res) => {
     return passport.authenticate('github', { scope: ['user:email'] })(req, res);
@@ -19,7 +20,8 @@ const renderSessionView = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-    return res.status(200).json({ user: req.session.user });
+    const user = new UserDTO(req.session);
+    return res.status(200).json({ user });
 };
 
 module.exports = {

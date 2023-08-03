@@ -5,7 +5,7 @@ class ProductsController {
     async getAllProducts(req, res) {
         try {
             const queryParams = req.query;
-            const response = await productService.get(queryParams);
+            const response = await productService.getAllProducts(queryParams);
             return res.status(200).json(response);
         } catch (error) {
             console.log(error);
@@ -20,7 +20,7 @@ class ProductsController {
     async getProductById(req, res) {
         try {
             const { pid } = req.params;
-            const product = await productService.get(pid);
+            const product = await productService.getAllProducts(pid);
             return res.status(200).json({
                 status: 'success',
                 msg: 'producto',
@@ -39,7 +39,7 @@ class ProductsController {
     async createProduct(req, res) {
         try {
             const { title, description, price, thumbnail, code, stock, category } = req.body;
-            const productCreated = await productService.createOne(title, description, price, thumbnail, code, stock, category);
+            const productCreated = await productService.createProduct(title, description, price, thumbnail, code, stock, category);
             return res.status(201).json({
                 status: 'success',
                 msg: 'product created',
@@ -63,12 +63,12 @@ class ProductsController {
                 console.log('validation error: please complete all fields.');
                 return res.status(400).json({
                     status: 'error',
-                msg: 'validation error: please complete all fields.',
-                data: {},
+                    msg: 'validation error: please complete all fields.',
+                    data: {},
                 });
             }
     
-            const productUpdated = await productService.updateOne(id, title, description, price, thumbnail, code, stock, category);
+            const productUpdated = await productService.updateProduct(id, title, description, price, thumbnail, code, stock, category);
             return res.status(200).json({
                 status: 'success',
                 msg: 'product updated',
@@ -87,7 +87,7 @@ class ProductsController {
     async deleteProduct(req, res) {
         try {
             const { id } = req.params;
-            const productDeleted = await productService.deleteOne(id);
+            const productDeleted = await productService.deleteProduct(id);
             return res.status(200).json({
                 status: 'success',
                 msg: 'product deleted',

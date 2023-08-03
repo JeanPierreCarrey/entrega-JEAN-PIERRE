@@ -1,4 +1,4 @@
-const { ProductModel } = require('../DAO/models/products.model.js');
+const { ProductMongo } = require('../DAO/mongo/products.mongo');
 const ProductService = require('../services/products.service.js');
 const productService = new ProductService();
 const CartService = require('../services/carts.service.js');
@@ -7,7 +7,7 @@ const cartService = new CartService();
 class ViewsService {
     async getHome(queryParams) {
         try {
-            const products = await productService.get(queryParams);
+            const products = await productService.getAllProducts(queryParams);
             return products;
         } catch (error) {
             console.error(error);
@@ -17,7 +17,7 @@ class ViewsService {
 
     async getRealTimeProducts() {
         try {
-            const products = await productService.get();
+            const products = await productService.getAllProducts();
             return products;
         } catch (error) {
             throw new Error('Error in server');
@@ -36,7 +36,7 @@ class ViewsService {
                 hasNextPage,
                 prevLink,
                 nextLink,
-            } = await productService.get(queryParams);
+            } = await productService.getAllProducts(queryParams);
             let productsSimplified = products.map((item) => ({
                 _id: item._id.toString(),
                 title: item.title,
@@ -65,7 +65,7 @@ class ViewsService {
 
     async getProduct(pid) {
         try {
-            const product = await ProductModel.findById(pid);
+            const product = await ProductMongo.getProduct(pid);
             const productSimplified = {
                 _id: product._id.toString(),
                 title: product.title,
@@ -84,7 +84,7 @@ class ViewsService {
 
     async getCart(cid) {
         try {
-            const cart = await cartService.get(cid);
+            const cart = await cartService.getCart(cid);
             const simplifiedCart = cart.products.map((item) => ({
                 title: item.product.title,
                 price: item.product.price,

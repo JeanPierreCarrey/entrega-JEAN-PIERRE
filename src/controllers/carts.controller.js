@@ -1,10 +1,12 @@
 const CartService = require("../services/carts.service.js");
 const cartService = new CartService();
+const TicketService = require('../services/tickets.service.js');
+const ticketService = new TicketService();
 
 class CartsController {
     async createCart(req, res) {
         try {
-            const newCart = await cartService.createOne();
+            const newCart = await cartService.createCart();
             res.status(201).json(newCart);
         } catch (error) {
         console.log(error);
@@ -15,7 +17,7 @@ class CartsController {
     async getCart(req, res) {
         try {
             const cartId = req.params.cid;
-            const cart = await cartService.get(cartId);
+            const cart = await cartService.getCart(cartId);
             res.status(200).json(cart);
         } catch (error) {
             res.status(404).json({ message: error.message });
@@ -83,6 +85,25 @@ class CartsController {
         } catch (error) {
             console.error(error);
             res.status(500).json({ status: "error", message: "Internal server error" });
+        }
+    }
+
+    async purchaseCart(req, res) {
+        try {
+            const { cid } = req.params;
+            const cart = await cartService.getCart(cid);
+
+            const productsNotProcessed = await cartService.processPurchase(cart);
+            const purchaserEmail = cart.userId;
+            const totalAmount = cartService.calculateTotalAmount(cart);
+
+            const ticket = await ticketService.createTicket(purchaserEmail, totalAmount);
+            cartService.removeProcessedProducts(cart, productsNotProcessed);
+
+            return res.status(200).json({ productsNotProcessed, ticketId: ticket._id });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ status: 'error', message: 'Internal server error' });
         }
     }
 }

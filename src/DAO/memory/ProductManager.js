@@ -6,9 +6,9 @@ class ProductManager{
         this.path = path;
     }
 
-    async addProduct(product) {
+    async createProduct(product) {
         try {
-            const products = await this.getProducts();
+            const products = await this.getProduct();
             const codeExists = products.some((p) => p.code === product.code);
             if(codeExists) {
                 throw new Error("Product with the same code already exists");
@@ -29,7 +29,7 @@ class ProductManager{
         }
     }
 
-    async getProducts() {
+    async getProduct() {
         try {
             const data = await fs.promises.readFile(this.path, "utf8");
             return JSON.parse(data);
@@ -40,7 +40,7 @@ class ProductManager{
 
     async getProductById(productId) {
         try {
-            const products = await this.getProducts();
+            const products = await this.getProduct();
             const product = products.find((p) => p.id === productId);
             if (product) {
                 return product;
@@ -54,7 +54,7 @@ class ProductManager{
 
     async updateProduct(productId, changes){
         try {
-            const products = await this.getProducts();
+            const products = await this.getProduct();
             const productIndex = products.findIndex((p) => p.id === productId);
             if (productIndex === -1) {
                 throw new Error("Product with the specified id not found");
@@ -72,7 +72,7 @@ class ProductManager{
 
     async deleteProduct(productId) {
         try {
-            const products = await this.getProducts();
+            const products = await this.getProduct();
             const productIndex = products.findIndex((p) => p.id === productId);
             if (productIndex === -1) {
                 throw new Error('Product not found');

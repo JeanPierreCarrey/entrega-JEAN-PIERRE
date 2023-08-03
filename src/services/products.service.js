@@ -1,6 +1,11 @@
-const { ProductModel } = require("../DAO/models/products.model.js");
+const { ProductModel } = require("../DAO/mongo/models/products.model.js");
+const {ProductMongo} = require("../DAO/mongo/products.mongo.js");
+const {ProductDTO} = require("../DAO/DTO/products.dto.js");
 
 class ProductService{
+    constructor(dao) {
+        this.dao = dao;
+    }
     
     validate(title, description, price, thumbnail, code, stock, category){
         if (!title || !description || !price || !thumbnail || !code || !stock || !category) {
@@ -9,7 +14,7 @@ class ProductService{
         }
     }
 
-    async get(queryParams){
+    async getAllProducts(queryParams){
         const { limit = 10, page = 1, sort, query } = queryParams;
         const filter = {};
 
@@ -43,14 +48,15 @@ class ProductService{
         return response;
     }
 
-    async createOne(title, description, price, thumbnail, code, stock, category){
+    async createProduct(title, description, price, thumbnail, code, stock, category){
         this.validate(title, description, price, thumbnail, code, stock, category);
-        const productCreated = await ProductModel.create({title, description, price, thumbnail, code, stock, category});
+        const productToCreate = new ProductDTO(title, description, price, thumbnail, code, stock, category);
+        const productCreated = await this.dao.createProduct(productToCreate);
         return productCreated;
     }
 
-    async deleteOne(_id){
-        const deleted = await ProductModel.deleteOne({_id});
+    async deleteProduct(_id){
+        const deleted = await ProductMongo.deleteProduct({_id});
         if (deleted.deletedCount === 1) {
             return true;
         } else {
@@ -58,9 +64,9 @@ class ProductService{
         }
     }
 
-    async updateOne(id, title, description, price, thumbnail, code, stock, category){
+    async updateProduct(id, title, description, price, thumbnail, code, stock, category){
             this.validate(title, description, price, thumbnail, code, stock, category);
-            const productUptaded = await ProductModel.updateOne({ _id: id }, {title, description, price, thumbnail, code, stock, category});
+            const productUptaded = await ProductMongo.updateProduct({ _id: id }, {title, description, price, thumbnail, code, stock, category});
             return productUptaded;
     }
 }
