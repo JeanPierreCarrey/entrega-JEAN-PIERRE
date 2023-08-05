@@ -1,37 +1,50 @@
 const ViewsService = require('../services/views.service.js');
 const viewsService = new ViewsService();
+const {CustomError} = require("../services/errors/custom-error.js");
+const EErros = require("../services/errors/enums.js");
 
 class ViewsController {
     async getHome(req, res) {
-        try {
             const { limit = 10, page = 1, sort, query } = req.query;
             const queryParams = { limit, page, sort, query };
             const products = await viewsService.getHome(queryParams);
+            if (products instanceof Error) {
+                CustomError.createError({
+                    name: 'Controller message error',
+                    cause: products,
+                    message: 'something went wrong :(',
+                    code: EErros.INTERNAL_SERVER_ERROR,
+                });
+            }
             return res.status(200).render('home', { products });
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ status: 'error', msg: 'Error in server', products: {} });
-        }
     }
 
     async getRealTimeProducts(req, res) {
-        try {
             const products = await viewsService.getRealTimeProducts();
+            if (products instanceof Error) {
+                CustomError.createError({
+                    name: 'Controller message error',
+                    cause: products,
+                    message: 'something went wrong :(',
+                    code: EErros.INTERNAL_SERVER_ERROR,
+                });
+            }
             return res.status(200).render('realTimeProducts', { products });
-        } catch (error) {
-            return res.status(500).json({ status: 'error', msg: 'Error in server', products: {} });
-        }
     }
 
     async getProducts(req, res) {
-        try {
             const { limit = 10, page = 1, sort, query } = req.query;
             const queryParams = { limit, page, sort, query };
             const products = await viewsService.getProducts(queryParams);
+            if (products instanceof Error) {
+                CustomError.createError({
+                    name: 'Controller message error',
+                    cause: products,
+                    message: 'something went wrong :(',
+                    code: EErros.INTERNAL_SERVER_ERROR,
+                });
+            }
             return res.render('products', products);
-        } catch (error) {
-            return res.status(500).json({ status: 'error', message: 'Error in server' });
-        }
     }
 
     async getProduct(req, res, next) {

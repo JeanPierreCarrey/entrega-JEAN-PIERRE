@@ -18,7 +18,7 @@ exports.connectMongo = connectMongo;
 
 //--------------------- SOCKET ---------------------
 const {Server} = require('socket.io');
-const {ChatModel} = require("./DAO/models/chats.model.js");
+const {ChatModel} = require("./DAO/mongo/models/chats.model.js");
 const {ProductService} = require("./services/products.service.js");
 
 function connectSocket(httpServer){
@@ -61,3 +61,21 @@ function isValidPassword(password, hashPassword) {
 
 exports.createHash = createHash;
 exports.isValidPassword = isValidPassword;
+
+//--------------------- FAKER ---------------------
+
+const {faker} = require("@faker-js/faker");
+
+faker.constructor = "es";
+
+exports.generateProduct = () => {
+    return {
+        title: faker.commerce.productName,
+        description: faker.commerce.productDescription,
+        price: faker.commerce.price,
+        thumbnail: faker.image.url,
+        code: faker.number.int,
+        stock: faker.number.int,
+        category: faker.word.noun,
+    }
+}

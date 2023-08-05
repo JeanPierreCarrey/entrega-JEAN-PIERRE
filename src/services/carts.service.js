@@ -2,6 +2,8 @@ const {CartMongo} = require("../DAO/mongo/carts.mongo.js");
 const {ProductMongo} = require("../DAO/mongo/products.mongo.js");
 const TicketService = require('./tickets.service.js');
 const ticketService = new TicketService();
+const {CustomError} = require("../services/errors/custom-error.js");
+const EErros = require("../services/errors/enums.js");
 
 const { v4: uuidv4 } = require('uuid');
 function generateUniqueTicketCode() {
@@ -17,7 +19,12 @@ class CartService{
     async getCart(cartId){
         const cart = await CartMongo.getCart(cartId).populate('products.product');
         if(!cart){
-            throw new Error('Cart not found');
+            CustomError.createError({
+                name: '404 not found error',
+                cause: cart,
+                message: 'Not Found',
+                code: EErros.NOT_FOUND_ERROR,
+            });
         }
         return cart;
     }

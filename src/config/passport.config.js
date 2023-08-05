@@ -4,7 +4,7 @@ const LocalStrategy = local.Strategy;
 const GitHubStrategy = require('passport-github2');
 
 const {createHash, isValidPassword} = require('../utils.js');
-const {UserModel} = require('../DAO/models/users.model.js');
+const {UserModel} = require('../DAO/mongo/models/users.model.js');
 const CartService = require('../services/carts.service.js');
 const cartService = new CartService();
 

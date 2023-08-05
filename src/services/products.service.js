@@ -1,6 +1,8 @@
 const { ProductModel } = require("../DAO/mongo/models/products.model.js");
 const {ProductMongo} = require("../DAO/mongo/products.mongo.js");
 const {ProductDTO} = require("../DAO/DTO/products.dto.js");
+const {CustomError} = require("../services/errors/custom-error.js");
+const EErros = require("../services/errors/enums.js");
 
 class ProductService{
     constructor(dao) {
@@ -9,8 +11,12 @@ class ProductService{
     
     validate(title, description, price, thumbnail, code, stock, category){
         if (!title || !description || !price || !thumbnail || !code || !stock || !category) {
-            console.log("validation error: please complete all fields.");
-            throw new Error("validation error: please complete all fields.");
+            CustomError.createError({
+                name: 'fields missing or incorrect',
+                cause: 'fields missing or incorrect',
+                message: 'validation error: please complete or correct all fields.',
+                code: EErros.VALIDATION_ERROR,
+            });
         }
     }
 
@@ -60,7 +66,12 @@ class ProductService{
         if (deleted.deletedCount === 1) {
             return true;
         } else {
-            throw new Error("Product not found");
+            CustomError.createError({
+                name: '404 not found error',
+                cause: deleted,
+                message: 'Not Found',
+                code: EErros.NOT_FOUND_ERROR,
+            });
         }
     }
 

@@ -3,29 +3,37 @@ const ProductService = require('../services/products.service.js');
 const productService = new ProductService();
 const CartService = require('../services/carts.service.js');
 const cartService = new CartService();
+const {CustomError} = require("../services/errors/custom-error.js");
+const EErros = require("../services/errors/enums.js");
 
 class ViewsService {
     async getHome(queryParams) {
-        try {
             const products = await productService.getAllProducts(queryParams);
+            if (products instanceof Error) {
+                CustomError.createError({
+                    name: 'Controller message error',
+                    cause: products,
+                    message: 'something went wrong :(',
+                    code: EErros.INTERNAL_SERVER_ERROR,
+                });
+            }
             return products;
-        } catch (error) {
-            console.error(error);
-            throw new Error('Error in server');
-        }
     }
 
     async getRealTimeProducts() {
-        try {
             const products = await productService.getAllProducts();
+            if (products instanceof Error) {
+                CustomError.createError({
+                    name: 'Controller message error',
+                    cause: products,
+                    message: 'something went wrong :(',
+                    code: EErros.INTERNAL_SERVER_ERROR,
+                });
+            }
             return products;
-        } catch (error) {
-            throw new Error('Error in server');
-        }
     }
 
     async getProducts(queryParams) {
-        try {
             const {
                 payload: products,
                 totalPages,
@@ -47,6 +55,14 @@ class ViewsService {
                 stock: item.stock,
                 category: item.category,
             }));
+            if (productService instanceof Error) {
+                CustomError.createError({
+                    name: 'Controller message error',
+                    cause: productService,
+                    message: 'something went wrong :(',
+                    code: EErros.INTERNAL_SERVER_ERROR,
+                });
+            }
             return {
                 products: productsSimplified,
                 totalPages,
@@ -58,9 +74,6 @@ class ViewsService {
                 prevLink: prevLink?.substring(4) || '',
                 nextLink: nextLink?.substring(4) || '',
             };
-        } catch (error) {
-            throw new Error('Error in server');
-        }
     }
 
     async getProduct(pid) {

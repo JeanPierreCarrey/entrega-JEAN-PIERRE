@@ -1,4 +1,6 @@
-const { UserModel } = require("../DAO/models/users.model.js");
+const { UserModel } = require("../DAO/mongo/models/users.model.js");
+const {CustomError} = require("../services/errors/custom-error.js");
+const EErros = require("../services/errors/enums.js");
 
 const renderSessionView = (req, res) => {
     return res.send(JSON.stringify(req.session));
@@ -10,7 +12,12 @@ const renderLoginView = (req, res) => {
 
 const handleLogin = (req, res) => {
     if (!req.user) {
-        return res.json({ error: 'invalid credentials' });
+        CustomError.createError({
+            name: 'fields missing or incorrect',
+            cause: 'there was an error in one of the methods',
+            message: 'validation error: please complete or correct all fields.',
+            code: EErros.VALIDATION_ERROR,
+        });
     }
     req.session.user = { _id: req.user._id, email: req.user.email, firstName: req.user.firstName, lastName: req.user.lastName, age: req.user.age, role: req.user.role };
     return res.redirect('/api/products');
@@ -26,7 +33,12 @@ const renderRegisterView = (req, res) => {
 
 const handleRegister = (req, res) => {
     if (!req.user) {
-        return res.json({ error: 'something went wrong' });
+            CustomError.createError({
+                name: 'Controller message error',
+                cause: 'there was an error in one of the methods',
+                message: 'something went wrong :(',
+                code: EErros.INTERNAL_SERVER_ERROR,
+            });
     }
     req.session.user = { _id: req.user._id, email: req.user.email, firstName: req.user.firstName, lastName: req.user.lastName, age: req.user.age, isAdmin: req.user.isAdmin };
     return res.json({ msg: 'ok', payload: req.user });
