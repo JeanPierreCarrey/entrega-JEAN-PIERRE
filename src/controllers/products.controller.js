@@ -2,7 +2,7 @@ const ProductService = require('../services/products.service.js');
 const productService = new ProductService();
 const {CustomError} = require("../services/errors/custom-error.js");
 const EErros = require("../services/errors/enums.js");
-const generateProduct = require("../utils.js");
+const {generateProduct} = require("../utils.js");
 
 class ProductsController {
     async getAllProducts(req, res) {
@@ -106,7 +106,7 @@ class ProductsController {
         for (let i = 0; i < 100; i++) {
             products.push(generateProduct());
         }
-        res.send({ status: "success", payload: users });
+        res.send({ status: "success", payload: products });
     }
 }
 

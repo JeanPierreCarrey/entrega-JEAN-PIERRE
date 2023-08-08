@@ -66,16 +66,16 @@ exports.isValidPassword = isValidPassword;
 
 const {faker} = require("@faker-js/faker");
 
-faker.constructor = "es";
+faker.locale = "es";
 
 exports.generateProduct = () => {
     return {
-        title: faker.commerce.productName,
-        description: faker.commerce.productDescription,
-        price: faker.commerce.price,
-        thumbnail: faker.image.url,
-        code: faker.number.int,
-        stock: faker.number.int,
-        category: faker.word.noun,
+        title: faker.commerce.productName(),
+        description: faker.commerce.productDescription(),
+        price: faker.commerce.price(),
+        thumbnail: faker.image.imageUrl(),
+        code: faker.random.alphaNumeric(10),
+        stock: faker.random.numeric(3),
+        category: faker.word.noun(),
     }
 }
