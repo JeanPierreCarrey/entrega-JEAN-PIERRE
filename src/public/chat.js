@@ -1,5 +1,6 @@
 const socket = io();
 let userEmail = '';
+const logger = require("../utils/logger.js");
 
 async function askEmail() {
     const {value: name} = await Swal.fire({
@@ -32,7 +33,7 @@ chatBox.addEventListener('keyup', ({key}) => {
 });
 
 socket.on('msg_back_to_front', (messages) => {
-    console.log(messages);
+    logger.debug(messages);
     let msgsFormateados = '';
     messages.forEach((msg) => {
         msgsFormateados += "<div style='border: 1px solid red;'>";

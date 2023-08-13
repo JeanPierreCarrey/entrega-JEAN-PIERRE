@@ -2,6 +2,7 @@ const ViewsService = require('../services/views.service.js');
 const viewsService = new ViewsService();
 const {CustomError} = require("../services/errors/custom-error.js");
 const EErros = require("../services/errors/enums.js");
+const logger = require("../utils/logger.js");
 
 class ViewsController {
     async getHome(req, res) {
@@ -69,6 +70,16 @@ class ViewsController {
 
     async getLogin(req, res) {
         res.render('login');
+    }
+
+    async loggerTest(req, res) {
+        logger.debug('Debug log for testing');
+        logger.info('Info log for testing');
+        logger.warn('Warning log for testing');
+        logger.error('Error log for testing');
+        logger.fatal('Fatal log for testing');
+    
+        res.status(200).json({ message: 'Logs tested successfully' });
     }
 }
 

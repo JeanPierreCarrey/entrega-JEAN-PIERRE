@@ -1,7 +1,8 @@
 const EErros = require("../services/errors/enums.js");
+const logger = require("../utils/logger.js");
 
 module.exports = function (error, req, res, next) {
-    console.log(error.cause);
+    logger.error(error.cause);
 
     switch (error.code) {
         case EErros.INTERNAL_SERVER_ERROR:

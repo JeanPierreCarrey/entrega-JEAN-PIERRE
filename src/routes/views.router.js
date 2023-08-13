@@ -9,5 +9,6 @@ viewsRouter.get('/products', viewsController.getProducts);
 viewsRouter.get('/products/:pid', viewsController.getProduct);
 viewsRouter.get('/carts/:cid', viewsController.getCart);
 viewsRouter.get('/login', viewsController.getLogin);
+viewsRouter.get('/loggerTest', viewsController.loggerTest);
 
 module.exports = viewsRouter;

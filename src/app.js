@@ -13,10 +13,11 @@ const chatRouter = require('./routes/chat.router.js');
 const authRouter = require('./routes/auth.router.js');
 const sessionsRouter = require('./routes/sessions.router.js');
 
-const {connectSocket} = require('./utils.js');
-const {connectMongo} = require('./utils.js');
+const {connectSocket} = require('./utils/utils.js');
+const {connectMongo} = require('./utils/utils.js');
 const {iniPassport} = require('./config/passport.config.js');
 const errorHandler = require("./middlewares/error.js");
+const logger = require("./utils/logger.js");
 
 const app = express();
 app.use(compression({
@@ -62,7 +63,7 @@ app.get("*", (req, res) => {
 });
 
 const httpServer = app.listen(port, () => {
-    console.log(`Server running on port http://localhost:${port}/auth/login`)
+    logger.info(`Server running on port http://localhost:${port}/auth/login`)
 });
 
 connectMongo();

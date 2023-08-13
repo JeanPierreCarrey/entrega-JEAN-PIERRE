@@ -2,14 +2,15 @@
 
 require('dotenv').config();
 const {connect} = require("mongoose");
+const logger = require("./logger.js");
 
 async function connectMongo() {
     try {
         const mongodbUrl = process.env.MONGODB_URL;
         await connect(mongodbUrl);
-        console.log("plug to mongo!");
+        logger.info("plug to mongo!");
     } catch (e) {
-        console.log(e);
+        logger.error(e);
         throw "can not connect to the db";
     }
 }
@@ -18,14 +19,14 @@ exports.connectMongo = connectMongo;
 
 //--------------------- SOCKET ---------------------
 const {Server} = require('socket.io');
-const {ChatModel} = require("./DAO/mongo/models/chats.model.js");
-const {ProductService} = require("./services/products.service.js");
+const {ChatModel} = require("../DAO/mongo/models/chats.model.js");
+const {ProductService} = require("../services/products.service.js");
 
 function connectSocket(httpServer){
     const socketServer = new Server(httpServer);
 
     socketServer.on('connection', (socket) => {
-        console.log('New user connected');
+        logger.debug('New user connected');
 
         socket.on('addProduct', async (entries) => {
         const product = await ProductService.createOne(entries);

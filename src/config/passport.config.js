@@ -3,10 +3,11 @@ const local = require('passport-local');
 const LocalStrategy = local.Strategy;
 const GitHubStrategy = require('passport-github2');
 
-const {createHash, isValidPassword} = require('../utils.js');
+const {createHash, isValidPassword} = require('../utils/utils.js');
 const {UserModel} = require('../DAO/mongo/models/users.model.js');
 const CartService = require('../services/carts.service.js');
 const cartService = new CartService();
+const logger = require("../utils/logger.js");
 
 require('dotenv').config();
 const clientID = process.env.CLIENT_ID
@@ -19,11 +20,11 @@ function iniPassport() {
             try {
                 const user = await UserModel.findOne({ email: username });
                 if (!user) {
-                    console.log('User Not Found with username (email) ' + username);
+                    logger.debug('User Not Found with username (email) ' + username);
                     return done(null, false);
                 }
                 if (!isValidPassword(password, user.password)) {
-                    console.log('Invalid Password');
+                    logger.debug('Invalid Password');
                     return done(null, false);
                 }
 
@@ -46,7 +47,7 @@ function iniPassport() {
                     const { email, firstName, lastName, age } = req.body;
                     let user = await UserModel.findOne({ email: username });
                     if (user) {
-                        console.log('User already exists');
+                        logger.debug('User already exists');
                         return done(null, false);
                     }
 
@@ -64,12 +65,10 @@ function iniPassport() {
                     };
 
                     let userCreated = await UserModel.create(newUser);
-                    console.log(userCreated);
-                    console.log('User Registration succesful');
+                    logger.info('User Registration successful', { user: userCreated });
                     return done(null, userCreated);
                 } catch (e) {
-                    console.log('Error in register');
-                    console.log(e);
+                    logger.error('Error in register', { error });
                     return done(e);
                 }
             }
@@ -85,7 +84,7 @@ function iniPassport() {
                 callbackURL: 'http://localhost:8080/api/sessions/githubcallback',
             },
             async (accessToken, _, profile, done) => {
-                console.log(profile);
+                logger.debug(profile);
                 try {
                     const res = await fetch('https://api.github.com/user/emails', {
                         headers: {
@@ -117,15 +116,14 @@ function iniPassport() {
                             role: "user",
                         };
                         let userCreated = await UserModel.create(newUser);
-                        console.log('User Registration succesful');
+                        logger.info('User Registration succesful');
                         return done(null, userCreated);
                     } else {
-                        console.log('User already exists');
+                        logger.debug('User already exists');
                         return done(null, user);
                     }
                 } catch (e) {
-                    console.log('Error en auth github');
-                    console.log(e);
+                    logger.error('Error in GitHub authentication', { error });
                     return done(e);
                 }
             }

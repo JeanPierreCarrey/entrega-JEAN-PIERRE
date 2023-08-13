@@ -1,5 +1,6 @@
 const fs = require("fs");
 const {v4: uuidv4} = require('uuid');
+const logger = require("../../utils/logger.js");
 
 class CartManager{
     constructor() {
@@ -45,7 +46,7 @@ class CartManager{
             const data = JSON.parse(fileContent);
             this.carts = data.carts || [];
         }catch(error){
-            console.error("Error loading carts:", error);
+            logger.error("Error loading carts:", error);
         }
     }
 
@@ -53,7 +54,7 @@ class CartManager{
         try{
             await fs.promises.writeFile(this.filePath, JSON.stringify({carts: this.carts}));
         }catch (error){
-            console.error("Error saving carts:", error)
+            logger.error("Error saving carts:", error)
         }
     }
 }

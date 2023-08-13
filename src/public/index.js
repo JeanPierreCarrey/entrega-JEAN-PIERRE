@@ -1,6 +1,7 @@
 const addProductForm = document.getElementById("addProductForm");
 const addProductFormReal = document.getElementById("addProductFormReal");
 const productsList = document.getElementById("productsList");
+const logger = require("../utils/logger.js");
 
 async function deleteProduct(id) {
     const response = await fetch(`/api/products/${id}`, {
@@ -10,7 +11,7 @@ async function deleteProduct(id) {
         const li = document.getElementById(id);
         li.remove();
     }else{
-        console.error()
+        logger.error()
         alert("Product couldn't be deleted")
     }
 };
@@ -55,7 +56,7 @@ try {
 
 try {
     socket.on('connect', () => {
-        console.log("Successful connection");
+        logger.debug("Successful connection");
     });
     socket.on('addedProduct', product => {
         const li = `
@@ -107,11 +108,11 @@ function putIntoCart(_id) {
     fetch(url, options)
     .then((response) => response.json())
     .then((res) => {
-        console.log(res);
+        logger.debug(res);
         alert("added");
     })
     .catch((error) => {
-        console.error("Error:", error);
+        logger.error("Error:", error);
         alert(JSON.stringify(error));
     });
 }
@@ -130,11 +131,11 @@ if (!cartId) {
     fetch(url, options)
     .then((response) => response.json())
     .then((data) => {
-        console.log("Response:", data);
+        logger.debug("Response:", data);
         const cartId = localStorage.setItem("cart-id", data._id);
     })
     .catch((error) => {
-        console.error("Error:", error);
+        logger.error("Error:", error);
         alert(JSON.stringify(error));
     });
 }

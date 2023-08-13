@@ -1,6 +1,7 @@
 const { UserModel } = require("../DAO/mongo/models/users.model.js");
 const {CustomError} = require("../services/errors/custom-error.js");
 const EErros = require("../services/errors/enums.js");
+const logger = require("../utils/logger.js");
 
 const renderSessionView = (req, res) => {
     return res.send(JSON.stringify(req.session));
@@ -60,12 +61,14 @@ const renderProductsView = async (req, res) => {
                 cartID: user.cartID,
                 role: user.role,
             };
+            logger.debug('Rendering products view with user data:', userData);
             return res.render('products', { user: userData });
         } else {
+            logger.debug('Rendering products view with no user data');
             return res.render('products', { user: null });
         }
     } catch (error) {
-        console.error(error);
+        logger.error('Error retrieving user data:', error);
         return res.render('products', { user: null, error: 'Error retrieving user data' });
     }
 };

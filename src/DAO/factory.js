@@ -1,12 +1,13 @@
 const config = require('../config/config.js');
 const mongoose = require('mongoose');
+const logger = require("../utils/logger.js");
 
 let Products;
 let Carts;
 
 switch (config.persistence) {
     case 'MONGO':
-        console.log('Mongo connected');
+        logger.info('Mongo connected');
 
         mongoose.connect(process.env.MONGODB_URL);
         const ProductsMongo = require('./mongo/products.mongo.js').default;
@@ -16,7 +17,7 @@ switch (config.persistence) {
 
     break;
     case 'FILESYSTEM':
-        console.log('Persistence with Memory');
+        logger.info('Persistence with Memory');
         const ProductsMemory = require('./memory/ProductManager.js').default;
         const CartsMemory = require('./memory/CartManager.js').default;
         Products = ProductsMemory;

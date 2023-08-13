@@ -1,5 +1,6 @@
 const fs = require("fs");
 const {v4: uuidv4} = require('uuid');
+const logger = require("../../utils/logger.js");
 
 class ProductManager{
     constructor(path) {
@@ -13,7 +14,7 @@ class ProductManager{
             if(codeExists) {
                 throw new Error("Product with the same code already exists");
             }
-            console.log(product);
+            logger.debug(product);
             if(!product.title || !product.description || !product.price || !product.thumbnail || !product.code || !product.stock || !product.category) {
                 throw new Error ("All fields are mandatory")
             }
@@ -24,7 +25,7 @@ class ProductManager{
             return newProduct;
         }
         catch (err){
-            console.error("Error in addProduct method:", err);
+            logger.error("Error in addProduct method:", err);
             throw new Error ("addProduct method failed")
         }
     }
