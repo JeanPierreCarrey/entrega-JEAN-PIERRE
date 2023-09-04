@@ -51,7 +51,7 @@ function iniPassport() {
                         return done(null, false);
                     }
 
-                    const newCart = await cartService.createOne();
+                    const newCart = await cartService.createCart();
                     const cartID = newCart._id.toString();
 
                     const newUser = {
@@ -68,7 +68,7 @@ function iniPassport() {
                     logger.info('User Registration successful', { user: userCreated });
                     return done(null, userCreated);
                 } catch (e) {
-                    logger.error('Error in register', { error });
+                    logger.error('Error in register', e);
                     return done(e);
                 }
             }

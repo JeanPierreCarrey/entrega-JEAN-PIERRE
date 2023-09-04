@@ -1,7 +1,24 @@
+const passport = require('passport');
 const { UserModel } = require("../DAO/mongo/models/users.model.js");
 const {CustomError} = require("../services/errors/custom-error.js");
 const EErros = require("../services/errors/enums.js");
 const logger = require("../utils/logger.js");
+const CodeService = require("../services/code.service.js");
+const codeService = new CodeService();
+
+const renderGitHubLogin = (req, res) => {
+    return passport.authenticate('github', { scope: ['user:email'] })(req, res);
+};
+
+const handleGitHubCallback = (req, res, next) => {
+    passport.authenticate('github', { failureRedirect: '/login' })(req, res, (err) => {
+        if (err) {
+            logger.error('Error in auth GitHub callback:', err);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+        return res.redirect('/');
+    });
+};
 
 const renderSessionView = (req, res) => {
     return res.send(JSON.stringify(req.session));
@@ -91,7 +108,34 @@ const renderAdministrationView = (req, res) => {
     return res.send('Data');
 };
 
+const recoverPassword = (req, res) => {
+    res.render('recoverPassword');
+};
+
+const checkEmail = async (req, res) => {
+    const {email} = req.body;
+    await codeService.generateCode(email);
+    res.render('checkEmail');
+};
+
+const resetPassword = async (req, res) => {
+    const {email, code} = req.query;
+    const isValidCode = await codeService.findCode(email, code);
+    if (isValidCode) {
+        res.render('resetPassword', { email, code });
+    } else {
+        res.render('error');
+    }
+};
+
+const resetPasswordComplete = async (req, res) => {
+    const updatedUser = codeService.updateUser({email}, {password});
+    res.redirect('/api/auth/login')
+}
+
 module.exports = {
+    renderGitHubLogin,
+    handleGitHubCallback,
     renderSessionView,
     renderLoginView,
     handleLogin,
@@ -103,4 +147,8 @@ module.exports = {
     renderProfileView,
     handleLogout,
     renderAdministrationView,
+    recoverPassword,
+    checkEmail,
+    resetPassword,
+    resetPasswordComplete,
 };
