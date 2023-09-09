@@ -80,6 +80,23 @@ class ProductService{
             const productUptaded = await ProductMongo.updateProduct({ _id: id }, {title, description, price, thumbnail, code, stock, category});
             return productUptaded;
     }
+
+    async getProductByIdAndOwner(productId, ownerEmail) {
+        const product = await ProductMongo.findProduct({
+            _id: productId,
+            owner: ownerEmail,
+        });
+        if (product){
+            return product
+        } else {
+            CustomError.createError({
+                name: '404 not found error',
+                cause: deleted,
+                message: 'Not Found',
+                code: EErros.NOT_FOUND_ERROR,
+            });
+        }
+    }
 }
 
 module.exports = ProductService;

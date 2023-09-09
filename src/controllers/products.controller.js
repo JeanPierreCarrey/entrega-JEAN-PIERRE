@@ -39,7 +39,18 @@ class ProductsController {
     
     async createProduct(req, res) {
             const { title, description, price, thumbnail, code, stock, category } = req.body;
-            const productCreated = await productService.createProduct(title, description, price, thumbnail, code, stock, category);
+            const userEmail = req.user.email;
+            const productToCreate = {
+                title,
+                description,
+                price,
+                thumbnail,
+                code,
+                stock,
+                category,
+                owner: userEmail,
+            };
+            const productCreated = await productService.createProduct(productToCreate);
             if (productCreated instanceof Error) {
                 CustomError.createError({
                     name: 'Controller message error',
@@ -84,7 +95,10 @@ class ProductsController {
     }
     
     async deleteProduct(req, res) {
-            const { id } = req.params;
+        const { id } = req.params;
+        const userEmail = req.user.email;
+
+        if (req.user.role === 'admin') {
             const productDeleted = await productService.deleteProduct(id);
             if (productDeleted instanceof Error) {
                 CustomError.createError({
@@ -100,6 +114,46 @@ class ProductsController {
                 data: {},
             });
         }
+
+        const product = await productService.getProductByIdAndOwner(id, userEmail);
+        if (!product) {
+            return res.status(403).json({
+                status: 'error',
+                msg: 'You do not have permission to delete this product.',
+            });
+        }
+
+        const productDeleted = await productService.deleteProduct(id);
+        if (productDeleted instanceof Error) {
+            CustomError.createError({
+                name: 'Controller message error',
+                cause: productDeleted,
+                message: 'something went wrong :(',
+                code: EErros.INTERNAL_SERVER_ERROR,
+            });
+        }
+        return res.status(200).json({
+            status: 'success',
+            msg: 'product deleted',
+            data: {},
+        });
+
+/*             const product = await productService.getProductByIdAndOwner(id, userEmail);
+            if (!product) {
+                return CustomError.createError({
+                    name: 'Controller message error',
+                    cause: 'Product not found',
+                    code: EErros.NOT_FOUND_ERROR,
+                }, res);
+            }
+            await productService.deleteProduct(id);
+            return res.status(200).json({
+                status: 'success',
+                msg: 'product deleted',
+                data: {},
+            }); */
+            
+    }
 
     async mock(req, res) {
         const products = [];

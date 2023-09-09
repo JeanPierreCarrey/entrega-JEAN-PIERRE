@@ -29,16 +29,23 @@ class CartService{
         return cart;
     }
 
-    async addProductToCart(cartId, productId) {
+    async addProductToCart(cartId, productId, user) {
         try {
             const cart = await CartMongo.getCart(cartId);
             const product = await ProductMongo.getProduct(productId);
+
             if (!cart) {
                 throw new Error('Cart not found');
             }
+
             if (!product) {
                 throw new Error('Product not found');
             }
+
+            if (user.role === 'premium' && product.owner === user.email) {
+                throw new Error('Premium users cannot add their own products to the cart');
+            }
+            
             cart.products.push({product: product._id, quantity: 1});
             await cart.save();
             return cart;

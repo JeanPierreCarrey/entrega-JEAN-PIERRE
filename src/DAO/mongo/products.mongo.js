@@ -20,6 +20,11 @@ class ProductMongo{
         const product = ProductModel.findById();
         return product;
     }
+
+    async findProduct(){
+        const product = ProductModel.findOne();
+        return product
+    }
 };
 
 module.exports = ProductMongo;

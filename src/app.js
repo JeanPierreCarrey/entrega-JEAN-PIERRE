@@ -5,6 +5,8 @@ const MongoStore = require('connect-mongo');
 const passport = require('passport');
 require('dotenv').config();
 const compression = require("express-compression");
+const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerUiExpress = require('swagger-ui-express');
 
 const productsRouter = require('./routes/products.router.js');
 const cartsRouter = require('./routes/carts.router.js');
@@ -12,6 +14,7 @@ const viewsRouter = require('./routes/views.router.js');
 const chatRouter = require('./routes/chat.router.js');
 const authRouter = require('./routes/auth.router.js');
 const sessionsRouter = require('./routes/sessions.router.js');
+const usersRoleRouter = require('./routes/usersRole.router.js');
 
 const {connectSocket} = require('./utils/utils.js');
 const {connectMongo} = require('./utils/utils.js');
@@ -47,12 +50,27 @@ app.engine('handlebars', engine());
 app.set('view engine', '.handlebars');
 app.set('views', 'src/views');
 
+const swaggerOptions = {
+    definition: {
+        openapi: "3.0.1",
+        info: {
+            title: "Documentacion Ecommerce",
+            description: "Este proyecto es un ecommerce",
+        },
+    },
+    apis: [`${__dirname}/docs/**/*.yaml`],
+};
+
+const specs = swaggerJSDoc(swaggerOptions);
+app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 app.use('/', viewsRouter);
 app.use("/chat", chatRouter);
 app.use('/auth', authRouter);
 app.use('/api/sessions', sessionsRouter);
+app.use('/api/users', usersRoleRouter);
 app.use(errorHandler);
 app.get("*", (req, res) => {
 	return res.status(404).json({

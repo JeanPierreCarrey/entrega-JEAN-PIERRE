@@ -8,7 +8,7 @@ const schema = new Schema({
     age: {type: Number, required: false},
     password: {type: String, max: 100},
     cartID: {type: String, required: false},
-    role: {type: String, required: true, default: "user"},
+    role: {type: String, enum: ['user', 'admin', 'premium'], required: true, default: "user"},
     },
     {versionKey: false}
 );

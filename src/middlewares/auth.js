@@ -14,9 +14,18 @@ const isUser = (req, res, next) => {
     }
 };
 
+function isPremium(req, res, next) {
+    const user = req.user;
+    if (user && user.role === 'premium') {
+        return next();
+    }
+    return res.status(403).json({ message: 'You do not have permission to perform this action.' });
+};
+
 module.exports = {
     isAdmin,
     isUser,
+    isPremium,
 };
 
 /* function isUser(req, res, next) {

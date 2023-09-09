@@ -1,13 +1,13 @@
-const passport = require('passport');
-const local = require('passport-local');
-const LocalStrategy = local.Strategy;
-const GitHubStrategy = require('passport-github2');
-
 const {createHash, isValidPassword} = require('../utils/utils.js');
 const {UserModel} = require('../DAO/mongo/models/users.model.js');
 const CartService = require('../services/carts.service.js');
 const cartService = new CartService();
 const logger = require("../utils/logger.js");
+
+const passport = require('passport');
+const local = require('passport-local');
+const LocalStrategy = local.Strategy;
+const GitHubStrategy = require('passport-github2');
 
 require('dotenv').config();
 const clientID = process.env.CLIENT_ID

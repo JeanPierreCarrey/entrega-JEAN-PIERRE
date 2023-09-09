@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon ./src/app.js",
+    "dev": "nodemon -e yaml,js ./src/app.js",
     "start": "node ./src/app.js"
   },
   "keywords": [],
@@ -25,6 +25,8 @@
     "passport-github2": "^0.1.12",
     "passport-local": "^1.0.0",
     "socket.io": "^4.6.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
     "sweetalert": "^2.1.2",
     "uuid": "^9.0.0",
     "winston": "^3.10.0"

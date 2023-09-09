@@ -9,6 +9,7 @@ const schema = new Schema({
     code: { type: String, required: true, max: 100 },
     stock: { type: String, required: true, max: 100 },
     category: { type: String, required: true, max: 100 },
+    owner: { type: String, required: true, default: 'admin' },
 });
 
 schema.plugin(mongoosePaginate);
