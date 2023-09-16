@@ -86,3 +86,5 @@ const httpServer = app.listen(port, () => {
 
 connectMongo();
 connectSocket(httpServer);
+
+module.exports = app;

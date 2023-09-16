@@ -5,6 +5,7 @@ const EErros = require("../services/errors/enums.js");
 const logger = require("../utils/logger.js");
 const CodeService = require("../services/code.service.js");
 const codeService = new CodeService();
+const {createHash} = require('../utils/utils.js');
 
 const renderGitHubLogin = (req, res) => {
     return passport.authenticate('github', { scope: ['user:email'] })(req, res);
@@ -129,8 +130,10 @@ const resetPassword = async (req, res) => {
 };
 
 const resetPasswordComplete = async (req, res) => {
-    const updatedUser = codeService.updateUser({email}, {password});
-    res.redirect('/api/auth/login')
+    const { password, email } = req.body;
+    const passwordHash = createHash(password)
+    const updatedUser = await codeService.updateUser(email, passwordHash);
+    res.redirect('/auth/login')
 }
 
 module.exports = {

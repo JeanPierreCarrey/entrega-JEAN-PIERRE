@@ -1,5 +1,7 @@
-const {CartMongo} = require("../DAO/mongo/carts.mongo.js");
-const {ProductMongo} = require("../DAO/mongo/products.mongo.js");
+const CartMongo = require("../DAO/mongo/carts.mongo.js");
+const cartMongo = new CartMongo();
+const ProductMongo = require("../DAO/mongo/products.mongo.js");
+const productMongo = new ProductMongo();
 const TicketService = require('./tickets.service.js');
 const ticketService = new TicketService();
 const {CustomError} = require("../services/errors/custom-error.js");
@@ -12,12 +14,12 @@ function generateUniqueTicketCode() {
 
 class CartService{
     async createCart(){
-        const cartCreated = await CartMongo.createCart({});
+        const cartCreated = await cartMongo.createCart({});
         return cartCreated;
     }
 
     async getCart(cartId){
-        const cart = await CartMongo.getCart(cartId).populate('products.product');
+        const cart = await cartMongo.getCart(cartId).populate('products.product');
         if(!cart){
             CustomError.createError({
                 name: '404 not found error',
@@ -31,8 +33,8 @@ class CartService{
 
     async addProductToCart(cartId, productId, user) {
         try {
-            const cart = await CartMongo.getCart(cartId);
-            const product = await ProductMongo.getProduct(productId);
+            const cart = await cartMongo.getCart(cartId);
+            const product = await productMongo.getProduct(productId);
 
             if (!cart) {
                 throw new Error('Cart not found');
@@ -56,7 +58,7 @@ class CartService{
 
     async updateCart(cartId, products) {
         try {
-            const cart = await CartMongo.updateCart(cartId, {products}, {new: true});
+            const cart = await cartMongo.updateCart(cartId, {products}, {new: true});
             return cart;
         } catch (error) {
             throw new Error('Error updating cart in database');
@@ -65,7 +67,7 @@ class CartService{
 
     async updateProductQuantity(cartId, productId, quantity) {
         try {
-            const cart = await CartMongo.getCart(cartId);
+            const cart = await cartMongo.getCart(cartId);
             const productIndex = cart.products.findIndex((p) => p.product.toString() === productId);
             if (productIndex === -1) {
                 throw new Error('Product not found in cart');
@@ -80,7 +82,7 @@ class CartService{
 
     async removeProduct(cartId, productId) {
         try {
-            const cart = await CartMongo.getCart(cartId);
+            const cart = await cartMongo.getCart(cartId);
             const productIndex = cart.products.findIndex((p) => p.product.toString() === productId);
             if (productIndex === -1) {
                 throw new Error('Product not found in cart');
@@ -95,7 +97,7 @@ class CartService{
 
     async clearCart(cartId) {
         try {
-            const cart = await CartMongo.getCart(cartId);
+            const cart = await cartMongo.getCart(cartId);
             cart.products = [];
             await cart.save();
         } catch (error) {
@@ -105,7 +107,7 @@ class CartService{
 
     async checkoutCart(cartId) {
         try {
-            const cart = await CartMongo.getCart(cartId).populate('products.product');
+            const cart = await cartMongo.getCart(cartId).populate('products.product');
             let totalAmount = 0;
             for (const product of cart.products) {
                 totalAmount += product.quantity * product.product.price;
@@ -128,7 +130,7 @@ class CartService{
     async processPurchase(cart) {
         const productsNotProcessed = [];
         for (const cartProduct of cart.products) {
-            const product = await ProductMongo.getProduct(cartProduct.productId);
+            const product = await productMongo.getProduct(cartProduct.productId);
             if (product.stock >= cartProduct.quantity) {
                 product.stock -= cartProduct.quantity;
                 await product.save();

@@ -20,6 +20,6 @@ authRouter.get('/administration', isUser, isAdmin, authController.renderAdminist
 authRouter.get('/recoverPassword', authController.recoverPassword);
 authRouter.post('/checkEmail', authController.checkEmail);
 authRouter.get('/resetPassword', authController.resetPassword);
-authRouter.post('/resetPassword', authController.resetPasswordComplete);
+authRouter.post('/resetPasswordComplete', authController.resetPasswordComplete);
 
 module.exports = authRouter;
