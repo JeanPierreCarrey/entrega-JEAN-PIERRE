@@ -29,14 +29,19 @@ const renderLoginView = (req, res) => {
     return res.render("login", {});
 };
 
-const handleLogin = (req, res) => {
+const handleLogin = async (req, res) => {
     if (!req.user) {
-        CustomError.createError({
+        throw CustomError.createError({
             name: 'fields missing or incorrect',
             cause: 'there was an error in one of the methods',
             message: 'validation error: please complete or correct all fields.',
             code: EErros.VALIDATION_ERROR,
         });
+    }
+    const user = await UserModel.findById(req.user._id);
+    if (user) {
+        user.last_connection = new Date();
+        await user.save();
     }
     req.session.user = { _id: req.user._id, email: req.user.email, firstName: req.user.firstName, lastName: req.user.lastName, age: req.user.age, role: req.user.role };
     return res.redirect('/api/products');
@@ -96,7 +101,13 @@ const renderProfileView = (req, res) => {
     return res.render('profile', { user: user });
 };
 
-const handleLogout = (req, res) => {
+const handleLogout = async (req, res) => {
+    const user = await UserModel.findById(req.session.user._id);
+    if (user) {
+        user.last_connection = new Date();
+        await user.save();
+    };
+
     req.session.destroy((err) => {
         if (err) {
             return res.status(500).render('error', { error: 'session couldnt be closed' });
@@ -136,6 +147,30 @@ const resetPasswordComplete = async (req, res) => {
     res.redirect('/auth/login')
 }
 
+const uploadDocuments = async (req, res) => {
+    const { uid } = req.params;
+    const { files } = req;
+
+    const user = await UserModel.findById(uid);
+    if (!user) {
+        return res.status(404).json({ message: 'User not found.' });
+    }
+
+    const documents = [];
+
+    for (const file of files) {
+        documents.push({
+            name: file.originalname,
+            reference: `/uploads/${file.filename}`,
+            status: 'uploaded'
+        });
+    }
+
+    user.documents = documents;
+    await user.save();
+    return res.status(200).json({ message: 'Documents uploaded successfully.' });
+};
+
 module.exports = {
     renderGitHubLogin,
     handleGitHubCallback,
@@ -154,4 +189,5 @@ module.exports = {
     checkEmail,
     resetPassword,
     resetPasswordComplete,
+    uploadDocuments,
 };

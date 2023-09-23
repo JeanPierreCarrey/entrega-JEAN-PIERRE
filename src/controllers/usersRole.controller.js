@@ -1,5 +1,5 @@
-const UserModel = require('../DAO/mongo/models/users.model.js');
 const {CustomError} = require("../services/errors/custom-error.js");
+const {UserModel} = require('../DAO/mongo/models/users.model.js');
 const EErros = require("../services/errors/enums.js");
 
 exports.toggleUserRole = async (req, res) => {
@@ -12,6 +12,19 @@ exports.toggleUserRole = async (req, res) => {
             cause: user,
             message: 'Not Found',
             code: EErros.NOT_FOUND_ERROR,
+        });
+    }
+
+    const requiredDocuments = ['Identificación', 'Comprobante de domicilio', 'Comprobante de estado de cuenta'];
+    const uploadedDocuments = user.documents.map(doc => doc.name);
+
+    const missingDocuments = requiredDocuments.filter(doc => !uploadedDocuments.includes(doc));
+    if (missingDocuments.length > 0) {
+        throw CustomError.createError({
+            name: 'Missing documents error',
+            message: 'The user has not uploaded all required documents.',
+            code: EErros.VALIDATION_ERROR,
+            cause: { missingDocuments }
         });
     }
 
