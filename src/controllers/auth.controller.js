@@ -6,6 +6,7 @@ const logger = require("../utils/logger.js");
 const CodeService = require("../services/code.service.js");
 const codeService = new CodeService();
 const {createHash} = require('../utils/utils.js');
+const upload = require('../middlewares/multer.js');
 
 const renderGitHubLogin = (req, res) => {
     return passport.authenticate('github', { scope: ['user:email'] })(req, res);
@@ -146,6 +147,36 @@ const resetPasswordComplete = async (req, res) => {
     const updatedUser = await codeService.updateUser(email, passwordHash);
     res.redirect('/auth/login')
 }
+
+/* const uploadDocuments = async (req, res) => {
+    const { uid } = req.params;
+    //const { files } = req;
+
+    upload.array('documents')(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({ error: 'Error uploading documents' });
+        }
+
+    const user = await UserModel.findById(uid);
+    if (!user) {
+        return res.status(404).json({ message: 'User not found.' });
+    }
+
+    const documents = [];
+
+    for (const file of req.files) {
+        documents.push({
+            name: file.originalname,
+            reference: `/uploads/${file.filename}`,
+            status: 'uploaded'
+        });
+    }
+
+    user.documents = documents;
+    await user.save();
+    return res.status(200).json({ message: 'Documents uploaded successfully.' });
+});
+}; */
 
 const uploadDocuments = async (req, res) => {
     const { uid } = req.params;

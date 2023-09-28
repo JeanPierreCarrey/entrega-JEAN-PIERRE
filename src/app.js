@@ -29,6 +29,7 @@ app.use(compression({
 );
 const port = process.env.PORT
 
+app.use(errorHandler);
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(express.static("src/public"));
@@ -71,7 +72,6 @@ app.use("/chat", chatRouter);
 app.use('/auth', authRouter);
 app.use('/api/sessions', sessionsRouter);
 app.use('/api/users', usersRoleRouter);
-app.use(errorHandler);
 app.get("*", (req, res) => {
 	return res.status(404).json({
         status: "error",

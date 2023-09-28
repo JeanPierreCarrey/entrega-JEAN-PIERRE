@@ -1,6 +1,6 @@
 const {CustomError} = require("../services/errors/custom-error.js");
-const {UserModel} = require('../DAO/mongo/models/users.model.js');
 const EErros = require("../services/errors/enums.js");
+const {UserModel} = require('../DAO/mongo/models/users.model.js');
 
 exports.toggleUserRole = async (req, res) => {
     const { uid } = req.params;
