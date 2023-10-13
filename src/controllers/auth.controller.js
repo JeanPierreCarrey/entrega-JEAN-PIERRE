@@ -5,8 +5,10 @@ const EErros = require("../services/errors/enums.js");
 const logger = require("../utils/logger.js");
 const CodeService = require("../services/code.service.js");
 const codeService = new CodeService();
+const AuthService = require("../services/auth.service.js");
+const authService = new AuthService();
 const {createHash} = require('../utils/utils.js');
-const upload = require('../middlewares/multer.js');
+//const upload = require('../middlewares/multer.js');
 
 const renderGitHubLogin = (req, res) => {
     return passport.authenticate('github', { scope: ['user:email'] })(req, res);
@@ -148,58 +150,50 @@ const resetPasswordComplete = async (req, res) => {
     res.redirect('/auth/login')
 }
 
-/* const uploadDocuments = async (req, res) => {
-    const { uid } = req.params;
-    //const { files } = req;
-
-    upload.array('documents')(req, res, async (err) => {
-        if (err) {
-            return res.status(400).json({ error: 'Error uploading documents' });
-        }
-
-    const user = await UserModel.findById(uid);
-    if (!user) {
-        return res.status(404).json({ message: 'User not found.' });
-    }
-
-    const documents = [];
-
-    for (const file of req.files) {
-        documents.push({
-            name: file.originalname,
-            reference: `/uploads/${file.filename}`,
-            status: 'uploaded'
-        });
-    }
-
-    user.documents = documents;
-    await user.save();
-    return res.status(200).json({ message: 'Documents uploaded successfully.' });
-});
-}; */
-
 const uploadDocuments = async (req, res) => {
-    const { uid } = req.params;
-    const { files } = req;
+    try {
+        const { uid } = req.params;
+        const { files } = req;
 
-    const user = await UserModel.findById(uid);
-    if (!user) {
-        return res.status(404).json({ message: 'User not found.' });
+        const response = await authService.uploadDocuments(uid, files);
+
+        return res.status(response.status).json({ message: response.message });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
     }
+};
 
-    const documents = [];
-
-    for (const file of files) {
-        documents.push({
-            name: file.originalname,
-            reference: `/uploads/${file.filename}`,
-            status: 'uploaded'
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await UserModel.find({}, 'name email role');
+        res.status(200).json({ users });
+    } catch (error) {
+        CustomError.createError({
+            name: 'Controller message error',
+            cause: 'there was an error in one of the methods',
+            message: 'something went wrong :(',
+            code: EErros.INTERNAL_SERVER_ERROR,
         });
     }
+};
 
-    user.documents = documents;
-    await user.save();
-    return res.status(200).json({ message: 'Documents uploaded successfully.' });
+const deleteInactiveUsers = async (req, res) => {
+    try {
+        const result = await authService.deleteInactiveUsers();
+        res.status(200).json({ message: 'Inactive users deleted and notifications sent.', result });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to delete inactive users.', error: error.message });
+    }
+}
+
+const roleManager = async (req, res) => {
+    try {
+        const users = await UserModel.find({}, 'name email role').lean();
+        res.render('roleManager', { users });
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        res.status(500).send('Internal Server Error');
+    }
 };
 
 module.exports = {
@@ -221,4 +215,7 @@ module.exports = {
     resetPassword,
     resetPasswordComplete,
     uploadDocuments,
+    getAllUsers,
+    deleteInactiveUsers,
+    roleManager,
 };

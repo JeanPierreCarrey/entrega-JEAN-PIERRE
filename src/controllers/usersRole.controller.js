@@ -1,10 +1,13 @@
-const {CustomError} = require("../services/errors/custom-error.js");
+const CustomError = require("../services/errors/custom-error.js");
 const EErros = require("../services/errors/enums.js");
 const {UserModel} = require('../DAO/mongo/models/users.model.js');
 
-exports.toggleUserRole = async (req, res) => {
+class UsersRoleController{
+async toggleUserRole (req, res) {
     const { uid } = req.params;
+    console.log('User ID:', uid);
     const user = await UserModel.findById(uid);
+    console.log('User:', user);
 
     if (!user) {
         throw CustomError.createError({
@@ -33,3 +36,6 @@ exports.toggleUserRole = async (req, res) => {
 
     return res.status(200).json({ message: 'User role updated successfully', user });
 };
+};
+
+module.exports = UsersRoleController;

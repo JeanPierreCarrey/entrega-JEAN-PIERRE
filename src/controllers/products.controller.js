@@ -3,6 +3,8 @@ const productService = new ProductService();
 const {CustomError} = require("../services/errors/custom-error.js");
 const EErros = require("../services/errors/enums.js");
 const {generateProduct} = require("../utils/utils.js");
+const nodemailer = require("nodemailer");
+require('dotenv').config();
 
 class ProductsController {
     async getAllProducts(req, res) {
@@ -108,6 +110,7 @@ class ProductsController {
                     code: EErros.INTERNAL_SERVER_ERROR,
                 });
             }
+
             return res.status(200).json({
                 status: 'success',
                 msg: 'product deleted',
@@ -132,27 +135,47 @@ class ProductsController {
                 code: EErros.INTERNAL_SERVER_ERROR,
             });
         }
+
+        if (req.user.role === 'premium') {
+            this.sendProductDeletionEmail(req.user.email, product.name);
+        }
+
         return res.status(200).json({
             status: 'success',
             msg: 'product deleted',
             data: {},
         });
+    }
 
-/*             const product = await productService.getProductByIdAndOwner(id, userEmail);
-            if (!product) {
-                return CustomError.createError({
-                    name: 'Controller message error',
-                    cause: 'Product not found',
-                    code: EErros.NOT_FOUND_ERROR,
-                }, res);
+    sendProductDeletionEmail = async (email, productName) => {
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.GOOGLE_EMAIL,
+                pass: process.env.GOOGLE_PASS,
+            },
+        });
+
+        const mailOptions = {
+            from: process.env.GOOGLE_EMAIL,
+            to: email,
+            subject: 'Your product has been deleted',
+            html: `
+            <p>Hello,</p>
+            <p>Your product "${productName}" has been deleted.</p>
+            <p>If you have any questions or concerns, please contact our support team.</p>
+            <p>Best regards,</p>
+            <p>Your Application Team</p>
+            `,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Product deletion email sent: ' + info.response);
             }
-            await productService.deleteProduct(id);
-            return res.status(200).json({
-                status: 'success',
-                msg: 'product deleted',
-                data: {},
-            }); */
-            
+        });
     }
 
     async mock(req, res) {

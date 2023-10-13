@@ -21,5 +21,8 @@ authRouter.get('/recoverPassword', authController.recoverPassword);
 authRouter.post('/checkEmail', authController.checkEmail);
 authRouter.get('/resetPassword', authController.resetPassword);
 authRouter.post('/resetPasswordComplete', authController.resetPasswordComplete);
+authRouter.get('/', authController.getAllUsers);
+authRouter.delete('/', authController.deleteInactiveUsers);
+authRouter.get('/roleManager', authController.roleManager);
 
 module.exports = authRouter;

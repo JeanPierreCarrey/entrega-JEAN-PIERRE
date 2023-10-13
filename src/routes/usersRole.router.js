@@ -1,6 +1,7 @@
 const express = require('express');
 const usersRoleRouter = express.Router();
-const usersRoleController = require('../controllers/usersRole.controller.js');
+const UsersRoleController = require('../controllers/usersRole.controller.js');
+const usersRoleController = new UsersRoleController();
 const authController = require('../controllers/auth.controller.js');
 const upload = require('../middlewares/multer');
 

@@ -80,7 +80,7 @@ class ViewsController {
         logger.fatal('Fatal log for testing');
     
         res.status(200).json({ message: 'Logs tested successfully' });
-    }
-}
+    };
+};
 
 module.exports = ViewsController;
