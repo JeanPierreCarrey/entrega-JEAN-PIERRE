@@ -10,7 +10,7 @@ const schema = new Schema({
     password: {type: String, max: 100},
     cartID: {type: String, required: false},
     role: {type: String, enum: [ROLES.USER, ROLES.ADMIN, ROLES.PREMIUM], required: true, default: ROLES.USER},
-    documents: [{ name: String, reference: String, status: String }],
+    documents: [{ name: String, reference: String }],
     last_connection: {type: Date},
     },
     {versionKey: false}

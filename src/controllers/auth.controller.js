@@ -35,7 +35,7 @@ const renderLoginView = (req, res) => {
 
 const handleLogin = async (req, res) => {
     if (!req.user) {
-        throw CustomError.createError({
+        CustomError.createError({
             name: 'fields missing or incorrect',
             cause: 'there was an error in one of the methods',
             message: 'validation error: please complete or correct all fields.',
@@ -105,7 +105,8 @@ const renderProductsView = async (req, res) => {
 };
 
 const renderProfileView = (req, res) => {
-    const user = { email: req.session.email, isAdmin: req.session.isAdmin };
+    console.log(req.session.user)
+    const user = { email: req.session.user.email, isAdmin: req.session.user.role === ROLES.ADMIN ? 'SI': 'NO', _id: String(req.session.user._id) };
     return res.render('profile', { user: user });
 };
 
@@ -124,9 +125,9 @@ const handleLogout = async (req, res) => {
     });
 };
 
-const renderAdministrationView = (req, res) => {
+/* const renderAdministrationView = (req, res) => {
     return res.send('Data');
-};
+}; */
 
 const recoverPassword = (req, res) => {
     res.render('recoverPassword');
@@ -161,9 +162,10 @@ const uploadDocuments = async (req, res) => {
         const { files } = req;
 
         const response = await authService.uploadDocuments(uid, files);
+        return res.status(200).json({ message: /* response.message */ 'ok' });
 
-        return res.status(response.status).json({ message: response.message });
     } catch (error) {
+        console.log(error)
         return res.status(500).json({ error: error.message });
     }
 };
@@ -219,7 +221,7 @@ module.exports = {
     renderProductsView,
     renderProfileView,
     handleLogout,
-    renderAdministrationView,
+/*     renderAdministrationView, */
     recoverPassword,
     checkEmail,
     resetPassword,

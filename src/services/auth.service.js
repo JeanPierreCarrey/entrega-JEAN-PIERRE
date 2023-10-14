@@ -1,9 +1,13 @@
 const { UserModel } = require("../DAO/mongo/models/users.model.js");
+const { DOCUMENT_TYPE } = require("../utils/constants.js");
 require('dotenv').config();
 const {transport} = require("../utils/mailer.js");
+const path = require("path");
+const CustomError = require("./errors/custom-error.js");
 
 class AuthService {
     async uploadDocuments(uid, files) {
+        console.log(files);
         try {
             const user = await UserModel.findById(uid);
             if (!user) {
@@ -11,15 +15,22 @@ class AuthService {
             }
     
             const documents = [];
-    
-            for (const file of files) {
+            
+            Object.entries(files).forEach(([key, value]) => {
+                let name = '';
+                if(key === 'identification') {
+                    name = DOCUMENT_TYPE.IDENTIFICATION
+                } else if(key === 'stateaccount') {
+                    name = DOCUMENT_TYPE.STATE_ACCOUNT
+                } else if (key === 'address') {
+                    name = DOCUMENT_TYPE.ADDRESS
+                }
+                const { base } = path.parse(value[0].path);
+                const reference = `/uploads/documents/${base}`
                 documents.push({
-                    name: file.originalname,
-                    reference: `/uploads/${file.filename}`,
-                    status: 'uploaded'
-                });
-            }
-    
+                    name, reference
+                })
+            })
             user.documents = documents;
             await user.save();
     

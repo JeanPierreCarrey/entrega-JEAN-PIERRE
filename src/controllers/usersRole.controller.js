@@ -1,7 +1,7 @@
 const CustomError = require("../services/errors/custom-error.js");
 const EErros = require("../services/errors/enums.js");
 const {UserModel} = require('../DAO/mongo/models/users.model.js');
-const { ROLES } = require("../utils/constants.js");
+const { ROLES, DOCUMENT_TYPE } = require("../utils/constants.js");
 
 class UsersRoleController{
 async toggleUserRole (req, res) {
@@ -11,7 +11,7 @@ async toggleUserRole (req, res) {
     console.log('User:', user);
 
     if (!user) {
-        throw CustomError.createError({
+        CustomError.createError({
             name: '404 not found error',
             cause: user,
             message: 'Not Found',
@@ -19,12 +19,12 @@ async toggleUserRole (req, res) {
         });
     }
 
-    const requiredDocuments = ['Identificación', 'Comprobante de domicilio', 'Comprobante de estado de cuenta'];
+    const requiredDocuments = [DOCUMENT_TYPE.IDENTIFICATION, DOCUMENT_TYPE.ADDRESS, DOCUMENT_TYPE.STATE_ACCOUNT];
     const uploadedDocuments = user.documents.map(doc => doc.name);
 
     const missingDocuments = requiredDocuments.filter(doc => !uploadedDocuments.includes(doc));
     if (missingDocuments.length > 0) {
-        throw CustomError.createError({
+        CustomError.createError({
             name: 'Missing documents error',
             message: 'The user has not uploaded all required documents.',
             code: EErros.VALIDATION_ERROR,
