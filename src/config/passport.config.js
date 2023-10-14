@@ -81,7 +81,7 @@ function iniPassport() {
             {
                 clientID: clientID,
                 clientSecret: clientSecret,
-                callbackURL: 'http://localhost:8080/api/sessions/githubcallback',
+                callbackURL: 'http://localhost:8080/auth/githubcallback',
             },
             async (accessToken, _, profile, done) => {
                 logger.debug(profile);
@@ -103,7 +103,7 @@ function iniPassport() {
     
                     let user = await UserModel.findOne({ email: profile.email });
                     if (!user) {
-                        const newCart = await cartService.createOne();
+                        const newCart = await cartService.createCart();
                         const cartID = newCart._id.toString();
 
                         const newUser = {
@@ -123,7 +123,7 @@ function iniPassport() {
                         return done(null, user);
                     }
                 } catch (e) {
-                    logger.error('Error in GitHub authentication', { error });
+                    logger.error('Error in GitHub authentication', { error: e });
                     return done(e);
                 }
             }
