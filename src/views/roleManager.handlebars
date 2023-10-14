@@ -48,8 +48,10 @@
                 method: 'DELETE'
             });
 
-            const data = await response.json();
-            console.log('User deleted:', data);
+            if(response.ok) {
+                alert('user deleted')
+                window.location.assign(window.location.href)
+            }
         } catch (error) {
             console.error('Error deleting user:', error);
         }

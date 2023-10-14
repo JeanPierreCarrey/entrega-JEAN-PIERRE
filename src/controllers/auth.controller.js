@@ -200,7 +200,8 @@ const roleManager = async (req, res) => {
             res.render('permissionDenied')
             return
         }
-        const users = await UserModel.find({}, 'name email role').lean();
+        let users = await UserModel.find({}, 'name email role').lean();
+        users = users.filter(user => user.role !== ROLES.ADMIN)
         res.render('roleManager', { users });
     } catch (error) {
         console.error('Error fetching user data:', error);
