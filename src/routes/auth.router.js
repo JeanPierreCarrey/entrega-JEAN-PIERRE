@@ -1,8 +1,9 @@
 const express = require('express');
 const authRouter = express.Router();
-const { isUser, isAdmin } = require("../middlewares/auth.js");
+const { isUser, isAdmin, roles } = require("../middlewares/auth.js");
 const passport = require('passport');
 const authController = require('../controllers/auth.controller.js');
+const { ROLES } = require('../utils/constants.js');
 
 authRouter.get('/login/github', authController.renderGitHubLogin);
 authRouter.get('/githubcallback', authController.handleGitHubCallback);

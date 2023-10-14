@@ -1,7 +1,6 @@
 const addProductForm = document.getElementById("addProductForm");
 const addProductFormReal = document.getElementById("addProductFormReal");
 const productsList = document.getElementById("productsList");
-const logger = require("../utils/logger.js");
 
 async function deleteProduct(id) {
     const response = await fetch(`/api/products/${id}`, {
@@ -56,7 +55,7 @@ try {
 
 try {
     socket.on('connect', () => {
-        logger.debug("Successful connection");
+        console.info("Successful connection");
     });
     socket.on('addedProduct', product => {
         const li = `
@@ -108,11 +107,11 @@ function putIntoCart(_id) {
     fetch(url, options)
     .then((response) => response.json())
     .then((res) => {
-        logger.debug(res);
+        console.info(res);
         alert("added");
     })
     .catch((error) => {
-        logger.error("Error:", error);
+        console.error("Error:", error);
         alert(JSON.stringify(error));
     });
 }
@@ -131,11 +130,11 @@ if (!cartId) {
     fetch(url, options)
     .then((response) => response.json())
     .then((data) => {
-        logger.debug("Response:", data);
+        console.info("Response:", data);
         const cartId = localStorage.setItem("cart-id", data._id);
     })
     .catch((error) => {
-        logger.error("Error:", error);
+        console.error("Error:", error);
         alert(JSON.stringify(error));
     });
 }

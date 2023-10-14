@@ -3,12 +3,14 @@ const viewsService = new ViewsService();
 const {CustomError} = require("../services/errors/custom-error.js");
 const EErros = require("../services/errors/enums.js");
 const logger = require("../utils/logger.js");
+const ProductService = require('../services/products.service.js');
 
 class ViewsController {
     async getHome(req, res) {
+            const productService = new ProductService();
             const { limit = 10, page = 1, sort, query } = req.query;
             const queryParams = { limit, page, sort, query };
-            const products = await viewsService.getHome(queryParams);
+            const products = await productService.getAllProducts(queryParams)
             if (products instanceof Error) {
                 CustomError.createError({
                     name: 'Controller message error',
@@ -17,7 +19,7 @@ class ViewsController {
                     code: EErros.INTERNAL_SERVER_ERROR,
                 });
             }
-            return res.status(200).render('home', { products });
+            return res.status(200).render('home', { products: JSON.parse(JSON.stringify(products.payload)) });
     }
 
     async getRealTimeProducts(req, res) {
@@ -69,6 +71,10 @@ class ViewsController {
     }
 
     async getLogin(req, res) {
+        if(req.session.user) {
+            res.render('/')
+            return
+        }
         res.render('login');
     }
 

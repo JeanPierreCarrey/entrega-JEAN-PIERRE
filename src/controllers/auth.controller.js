@@ -8,6 +8,7 @@ const codeService = new CodeService();
 const AuthService = require("../services/auth.service.js");
 const authService = new AuthService();
 const {createHash} = require('../utils/utils.js');
+const { ROLES } = require('../utils/constants.js');
 //const upload = require('../middlewares/multer.js');
 
 const renderGitHubLogin = (req, res) => {
@@ -47,7 +48,7 @@ const handleLogin = async (req, res) => {
         await user.save();
     }
     req.session.user = { _id: req.user._id, email: req.user.email, firstName: req.user.firstName, lastName: req.user.lastName, age: req.user.age, role: req.user.role };
-    return res.redirect('/api/products');
+    return res.redirect('/');
 };
 
 const renderFailLoginView = async (req, res) => {
@@ -55,6 +56,10 @@ const renderFailLoginView = async (req, res) => {
 };
 
 const renderRegisterView = (req, res) => {
+    if(req.session.user) {
+        res.redirect('/');
+        return
+    }
     return res.render("register", {});
 };
 
@@ -188,6 +193,11 @@ const deleteInactiveUsers = async (req, res) => {
 
 const roleManager = async (req, res) => {
     try {
+        const user = req.session.user;
+        if(user.role !== ROLES.ADMIN) {
+            res.render('permissionDenied')
+            return
+        }
         const users = await UserModel.find({}, 'name email role').lean();
         res.render('roleManager', { users });
     } catch (error) {

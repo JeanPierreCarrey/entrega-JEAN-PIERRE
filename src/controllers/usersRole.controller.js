@@ -1,6 +1,7 @@
 const CustomError = require("../services/errors/custom-error.js");
 const EErros = require("../services/errors/enums.js");
 const {UserModel} = require('../DAO/mongo/models/users.model.js');
+const { ROLES } = require("../utils/constants.js");
 
 class UsersRoleController{
 async toggleUserRole (req, res) {
@@ -31,7 +32,7 @@ async toggleUserRole (req, res) {
         });
     }
 
-    user.role = user.role === 'user' ? 'premium' : 'user';
+    user.role = user.role === ROLES.USER ? ROLES.PREMIUM : ROLES.USER;
     await user.save();
 
     return res.status(200).json({ message: 'User role updated successfully', user });
