@@ -10,7 +10,7 @@ async function deleteProduct(id) {
         const li = document.getElementById(id);
         li.remove();
     }else{
-        logger.error()
+        console.error()
         alert("Product couldn't be deleted")
     }
 };
@@ -37,6 +37,8 @@ try {
         })
         const product = await response.json();
         if(response.ok) {
+            alert('product created')
+            window.location.assign(window.location.href)
             const li = `
             <li id="${product.id}">
                 <div>

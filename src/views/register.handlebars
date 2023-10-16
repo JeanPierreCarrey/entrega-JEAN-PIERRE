@@ -28,8 +28,9 @@ formRegister.addEventListener("submit", async (e) => {
         }
     })
     if(response.ok) {
-        window.location.assign('/login')
+        window.location.assign('/auth/login')
+    } else{
+        alert('Error al registrar usuario')
     }
-    alert('Error al registrar usuario')
 })
 </script>
