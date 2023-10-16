@@ -116,27 +116,26 @@ function putIntoCart(_id) {
         console.error("Error:", error);
         alert(JSON.stringify(error));
     });
-}
-
-if (!cartId) {
-    alert("no id");
-    const url = API_URL + "/carts";
-    const data = {};
-    const options = {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-    };
-    fetch(url, options)
-    .then((response) => response.json())
-    .then((data) => {
-        console.info("Response:", data);
-        const cartId = localStorage.setItem("cart-id", data._id);
-    })
-    .catch((error) => {
-        console.error("Error:", error);
-        alert(JSON.stringify(error));
-    });
+    if (!cartId) {
+        alert("no id");
+        const url = API_URL + "/carts";
+        const data = {};
+        const options = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        };
+        fetch(url, options)
+        .then((response) => response.json())
+        .then((data) => {
+            console.info("Response:", data);
+            const cartId = localStorage.setItem("cart-id", data._id);
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            alert(JSON.stringify(error));
+        });
+    }
 }
