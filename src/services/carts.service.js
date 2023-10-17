@@ -19,7 +19,7 @@ class CartService{
     }
 
     async getCart(cartId){
-        const cart = await cartMongo.getCart(cartId);
+        const cart = await cartMongo.getCart(cartId)
         if(!cart){
             CustomError.createError({
                 name: '404 not found error',
@@ -28,7 +28,7 @@ class CartService{
                 code: EErros.NOT_FOUND_ERROR,
             });
         }
-        return cart.populate('products.product').exec();
+        return cart
     }
 
     async addProductToCart(cartId, productId, user) {

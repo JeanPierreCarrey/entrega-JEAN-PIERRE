@@ -96,7 +96,7 @@ let cartId = localStorage.getItem("cart-id");
 const API_URL = "http://localhost:8080/api";
 
 function putIntoCart(_id) {
-    cartId = localStorage.getItem("cart-id");
+    const cartId = localStorage.getItem("cart-id");
     const url = API_URL + "/carts/" + cartId + "/product/" + _id;
     const data = {};
     const options = {

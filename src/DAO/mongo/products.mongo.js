@@ -16,8 +16,8 @@ class ProductMongo{
         return product;
     };
 
-    async getProduct(){
-        const product = await ProductModel.findById();
+    async getProduct(productId){
+        const product = await ProductModel.findById(productId);
         return product;
     }
 
