@@ -105,7 +105,6 @@ const renderProductsView = async (req, res) => {
 };
 
 const renderProfileView = (req, res) => {
-    console.log(req.session.user)
     const user = { email: req.session.user.email, isAdmin: req.session.user.role === ROLES.ADMIN ? 'SI': 'NO', _id: String(req.session.user._id) };
     return res.render('profile', { user: user });
 };

@@ -1,3 +1,17 @@
+<nav>
+    <ul>
+        <li>
+            <a href="/">Home</a>
+        </li>
+        <li>
+            <a href="/auth/profile">Profile</a>
+        </li>
+        <li>
+            <a href="/auth/roleManager">User Administration</a>
+        </li>
+    </ul>
+</nav>
+
 {{#if user}}
     <h2>Welcome, {{user.firstName}} {{user.lastName}}</h2>
     <p>Email: {{user.email}}</p>
@@ -20,10 +34,9 @@
         <p>{{this.code}}</p>
         <p>{{this.stock}}</p>
         <p>{{this.category}}</p>
-        <p>Availability: {{this.availability}}</p> {{!-- ? --}}
 
-        <a href="/products/{{this._id}}">View details of {{this._id}}</a>
-        <button onclick="putIntoCart('{{this._id}}')">Add to cart {{this._id}}</button>
+        {{!-- <a href="/products/{{this._id}}">View details of {{this._id}}</a> --}}
+        <button onclick="putIntoCart('{{this._id}}')">Add to cart</button>
     </div>
 {{/each}}
 

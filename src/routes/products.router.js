@@ -9,6 +9,6 @@ productsRouter.get('/', productsController.getAllProducts);
 productsRouter.get('/:pid', productsController.getProductById);
 productsRouter.post('/'/* , isPremium, isAdmin */, productsController.createProduct);
 productsRouter.put('/:pid', isAdmin, productsController.updateProduct);
-productsRouter.delete('/:pid', isAdmin, productsController.deleteProduct);
+productsRouter.delete('/:pid'/* , isAdmin */, productsController.deleteProduct);
 
 module.exports = productsRouter;

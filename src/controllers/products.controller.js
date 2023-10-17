@@ -5,6 +5,7 @@ const EErros = require("../services/errors/enums.js");
 const {generateProduct} = require("../utils/utils.js");
 const nodemailer = require("nodemailer");
 require('dotenv').config();
+const UserDTO = require("../DAO/DTO/user.dto");
 
 class ProductsController {
     async getAllProducts(req, res) {
@@ -98,9 +99,10 @@ class ProductsController {
     
     async deleteProduct(req, res) {
         const { id } = req.params;
-        const userEmail = req.user.email;
+        const user = new UserDTO(req.session)
+        const userEmail = user.email;
 
-        if (req.user.role === 'admin') {
+        if (user.role === 'admin') {
             const productDeleted = await productService.deleteProduct(id);
             if (productDeleted instanceof Error) {
                 CustomError.createError({
@@ -136,8 +138,8 @@ class ProductsController {
             });
         }
 
-        if (req.user.role === 'premium') {
-            this.sendProductDeletionEmail(req.user.email, product.name);
+        if (user.role === 'premium') {
+            this.sendProductDeletionEmail(user.email, product.name);
         }
 
         return res.status(200).json({

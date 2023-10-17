@@ -4,7 +4,7 @@ const ProductMongo = require("../DAO/mongo/products.mongo.js");
 const productMongo = new ProductMongo();
 const TicketService = require('./tickets.service.js');
 const ticketService = new TicketService();
-const {CustomError} = require("../services/errors/custom-error.js");
+const CustomError = require("../services/errors/custom-error.js");
 const EErros = require("../services/errors/enums.js");
 
 const { v4: uuidv4 } = require('uuid');
@@ -19,7 +19,7 @@ class CartService{
     }
 
     async getCart(cartId){
-        const cart = await cartMongo.getCart(cartId).populate('products.product');
+        const cart = await cartMongo.getCart(cartId);
         if(!cart){
             CustomError.createError({
                 name: '404 not found error',
@@ -28,7 +28,7 @@ class CartService{
                 code: EErros.NOT_FOUND_ERROR,
             });
         }
-        return cart;
+        return cart.populate('products.product').exec();
     }
 
     async addProductToCart(cartId, productId, user) {
