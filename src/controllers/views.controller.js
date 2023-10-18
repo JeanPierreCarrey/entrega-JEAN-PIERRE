@@ -64,6 +64,7 @@ class ViewsController {
         try {
             const { cid } = req.params;
             const cart = await viewsService.getCart(cid);
+            console.log(cart)
             res.render('cart', { cart });
         } catch (error) {
             next(error);

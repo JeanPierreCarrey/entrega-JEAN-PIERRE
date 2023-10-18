@@ -81,3 +81,5 @@ exports.generateProduct = () => {
         category: faker.word.noun(),
     }
 }
+
+// FETCH CART ID...
