@@ -28,7 +28,6 @@ class ProductService{
         if (query) {
             filter.$or = [
                 {category: query},
-                {availability: query}, /* ? */
             ];
         }
 

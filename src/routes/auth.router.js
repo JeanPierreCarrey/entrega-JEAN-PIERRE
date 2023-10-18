@@ -1,9 +1,8 @@
 const express = require('express');
 const authRouter = express.Router();
-const { isUser, isAdmin, roles, isLoggedIn } = require("../middlewares/auth.js");
+const { isLoggedIn } = require("../middlewares/auth.js");
 const passport = require('passport');
 const authController = require('../controllers/auth.controller.js');
-const { ROLES } = require('../utils/constants.js');
 
 authRouter.get('/login/github', authController.renderGitHubLogin);
 authRouter.get('/githubcallback', authController.handleGitHubCallback);
@@ -17,7 +16,6 @@ authRouter.get('/failregister', authController.renderFailRegisterView);
 authRouter.get('/products', authController.renderProductsView);
 authRouter.get('/profile', isLoggedIn, authController.renderProfileView);
 authRouter.get('/logout', authController.handleLogout);
-/* authRouter.get('/administration', isLoggedIn, authController.renderAdministrationView); */
 authRouter.get('/recoverPassword', authController.recoverPassword);
 authRouter.post('/checkEmail', authController.checkEmail);
 authRouter.get('/resetPassword', authController.resetPassword);

@@ -3,7 +3,6 @@ const { DOCUMENT_TYPE } = require("../utils/constants.js");
 require('dotenv').config();
 const {transport} = require("../utils/mailer.js");
 const path = require("path");
-const CustomError = require("./errors/custom-error.js");
 
 class AuthService {
     async uploadDocuments(uid, files) {

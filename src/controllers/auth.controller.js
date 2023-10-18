@@ -9,7 +9,6 @@ const AuthService = require("../services/auth.service.js");
 const authService = new AuthService();
 const {createHash} = require('../utils/utils.js');
 const { ROLES } = require('../utils/constants.js');
-//const upload = require('../middlewares/multer.js');
 
 const renderGitHubLogin = (req, res) => {
     return passport.authenticate('github', { scope: ['user:email'] })(req, res);
@@ -124,10 +123,6 @@ const handleLogout = async (req, res) => {
     });
 };
 
-/* const renderAdministrationView = (req, res) => {
-    return res.send('Data');
-}; */
-
 const recoverPassword = (req, res) => {
     res.render('recoverPassword');
 };
@@ -161,7 +156,7 @@ const uploadDocuments = async (req, res) => {
         const { files } = req;
 
         const response = await authService.uploadDocuments(uid, files);
-        return res.status(200).json({ message: /* response.message */ 'ok' });
+        return res.status(200).json({ message: 'ok' });
 
     } catch (error) {
         console.log(error)
@@ -221,7 +216,6 @@ module.exports = {
     renderProductsView,
     renderProfileView,
     handleLogout,
-/*     renderAdministrationView, */
     recoverPassword,
     checkEmail,
     resetPassword,
