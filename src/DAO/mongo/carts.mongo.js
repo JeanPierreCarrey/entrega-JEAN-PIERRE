@@ -7,7 +7,7 @@ class CartMongo {
     };
 
     async getCart(cartId){
-        const cart = await CartModel.findById(cartId).populate('products.product').lean();
+        const cart = await CartModel.findById(cartId).populate('products.product');
         return cart;
     }
 

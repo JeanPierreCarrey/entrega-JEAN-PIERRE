@@ -92,26 +92,54 @@ addProductFormReal.addEventListener('submit', (e) => {
 
 ///----------FETCH CART----------
 
-let cartId = sessionStorage.getItem("cart-id");
-const API_URL = "http://localhost:8080/api";
+const API_URL = 'http://localhost:8080/api';
+let cartId = localStorage.getItem('cart-id');
+if (!cartId) {
+    createNewCart();
+    cartId = localStorage.getItem('cart-id');
+}
 
-function putIntoCart(pid) {
-    const url = `${API_URL}/carts/${cartId}/product/${pid}`;
-    const data = {}
-    fetch(url, {
-        method: 'PUT',
+function putIntoCart(_id) {
+    const url = API_URL + '/carts/' + cartId + '/product/' + _id;
+    const data = {};
+    const options = {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+};
+    fetch(url, options)
+        .then((response) => response.json())
+        .then((res) => {
+            console.info(res);
+            alert('added');
+        })
+    .catch((error) => {
+        console.error('Error:', error);
+        alert(JSON.stringify(error));
+    });
+}
+
+function createNewCart() {
+    const url = API_URL + '/carts';
+    const options = {
+        method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
-    })
-    .then(response => {
-        if (response.ok) {
-            alert("Product added")
-        }
-    })
-    .catch(error => {
-        alert("product couldn't be added");
-        console.error(error)
+    };
+    fetch(url, options)
+        .then((response) => {
+            response.json()
+        .then((res) => {
+            console.info(res);
+            localStorage.setItem('cart-id', res._id);
+            return res._id;
+        });
+        })
+    .catch((error) => {
+        console.error('Error:', error);
+        alert(JSON.stringify(error));
     });
 }
