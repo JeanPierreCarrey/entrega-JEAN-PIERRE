@@ -143,3 +143,30 @@ function createNewCart() {
         alert(JSON.stringify(error));
     });
 }
+
+function clearCart() {
+    if (!cartId) {
+        return;
+    }
+
+    const url = `${API_URL}/carts/${cartId}`;
+    const options = {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    };
+
+    fetch(url, options)
+        .then((response) => {
+            if (response.ok) {
+                console.info('Cart cleared');
+            } else {
+                console.error('Failed to clear the cart');
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Error clearing the cart');
+        });
+}
